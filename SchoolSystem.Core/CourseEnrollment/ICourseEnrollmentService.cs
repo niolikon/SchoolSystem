@@ -1,8 +1,8 @@
-﻿using SchoolSystem.Core.Base.BaseInterfaces;
+﻿using SchoolSystem.Core.Common.BaseInterfaces;
 
-namespace SchoolSystem.Core.CourseEnrollment
+
+namespace SchoolSystem.Core.CourseEnrollment;
+
+public interface ICourseEnrollmentService : IBaseService<CourseEnrollmentDto>
 {
-    public interface ICourseEnrollmentService : IBaseService<CourseEnrollmentDto>
-    {
-    }
 }

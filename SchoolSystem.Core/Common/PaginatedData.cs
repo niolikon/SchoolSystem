@@ -1,15 +1,7 @@
-﻿namespace SchoolSystem.Core.Base
+﻿namespace SchoolSystem.Core.Common;
+
+public class PaginatedData<T>(IEnumerable<T> data, int totalCount)
 {
-    public class PaginatedData<T>
-    {
-        public IEnumerable<T> Data { get; set; }
-        public int TotalCount { get; set; }
-
-        public PaginatedData(IEnumerable<T> data, int totalCount)
-        {
-            Data = data;
-            TotalCount = totalCount;
-        }
-    }
-
+    public IEnumerable<T> Data { get; set; } = data;
+    public int TotalCount { get; set; } = totalCount;
 }

@@ -1,10 +1,9 @@
-﻿using SchoolSystem.Core.Base.BaseInterfaces;
+﻿using SchoolSystem.Core.Common.BaseInterfaces;
 
-namespace SchoolSystem.Core.Course
+namespace SchoolSystem.Core.Course;
+
+public interface ICourseRepository : IBaseRepository<CourseModel>
 {
-    public interface ICourseRepository : IBaseRepository<CourseModel>
-    {
-        Task<IEnumerable<CourseModel>> FindCoursesByStudentId(int studentId);
-        Task<IEnumerable<CourseModel>> FindCoursesByTeacherId(int teacherId);
-    }
+    Task<IEnumerable<CourseModel>> FindCoursesByStudentId(int studentId);
+    Task<IEnumerable<CourseModel>> FindCoursesByTeacherId(int teacherId);
 }

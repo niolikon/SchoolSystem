@@ -1,8 +1,8 @@
-﻿using SchoolSystem.Core.Base.BaseInterfaces;
+﻿using SchoolSystem.Core.Common.BaseInterfaces;
 
-namespace SchoolSystem.Core.Course
+
+namespace SchoolSystem.Core.Course;
+
+public interface ICourseService : IBaseService<CourseDto>
 {
-    public interface ICourseService : IBaseService<CourseDto>
-    {
-    }
 }

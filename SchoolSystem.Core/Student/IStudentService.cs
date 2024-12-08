@@ -1,8 +1,8 @@
-﻿using SchoolSystem.Core.Base.BaseInterfaces;
+﻿using SchoolSystem.Core.Common.BaseInterfaces;
 
-namespace SchoolSystem.Core.Student
+
+namespace SchoolSystem.Core.Student;
+
+public interface IStudentService : IBaseService<StudentDto>
 {
-    public interface IStudentService : IBaseService<StudentDto>
-    {
-    }
 }

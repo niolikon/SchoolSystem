@@ -1,73 +1,73 @@
-﻿using SchoolSystem.Core.Base;
-using SchoolSystem.Core.Base.BaseInterfaces;
+﻿using SchoolSystem.Core.Common;
+using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Course;
 
-namespace SchoolSystem.Core.Teacher
+
+namespace SchoolSystem.Core.Teacher;
+
+public class TeacherService(
+    IBaseMapper<TeacherModel, TeacherDto> teacherDtoMapper,
+    IBaseMapper<TeacherDto, TeacherModel> teacherModelMapper,
+    ITeacherRepository teacherRepository,
+    IBaseMapper<CourseModel, CourseDto> courseDtoMapper,
+    ICourseRepository courseRepository) : ITeacherService
 {
-    public class TeacherService(
-        IBaseMapper<TeacherModel, TeacherDto> teacherDtoMapper,
-        IBaseMapper<TeacherDto, TeacherModel> teacherModelMapper,
-        ITeacherRepository teacherRepository,
-        IBaseMapper<CourseModel, CourseDto> courseDtoMapper,
-        ICourseRepository courseRepository) : ITeacherService
+    public async Task<IEnumerable<TeacherDto>> GetAll()
     {
-        public async Task<IEnumerable<TeacherDto>> GetAll()
-        {
-            return teacherDtoMapper.MapList(await teacherRepository.GetAll());
-        }
+        return teacherDtoMapper.MapList(await teacherRepository.GetAll());
+    }
 
-        public async Task<PaginatedData<TeacherDto>> GetAllPaginated(int pageNumber, int pageSize)
-        {
-            PaginatedData<TeacherModel> paginatedTeachers = await teacherRepository.GetPaginatedData(pageNumber, pageSize);
-            List<TeacherDto> teachers = teacherDtoMapper.MapList(paginatedTeachers.Data).ToList();
+    public async Task<PaginatedData<TeacherDto>> GetAllPaginated(int pageNumber, int pageSize)
+    {
+        PaginatedData<TeacherModel> paginatedTeachers = await teacherRepository.GetPaginatedData(pageNumber, pageSize);
+        List<TeacherDto> teachers = teacherDtoMapper.MapList(paginatedTeachers.Data).ToList();
 
-            return new PaginatedData<TeacherDto> (teachers, paginatedTeachers.TotalCount);
-        }
+        return new PaginatedData<TeacherDto> (teachers, paginatedTeachers.TotalCount);
+    }
 
-        public async Task<TeacherDto> GetSingle(int id)
-        {
-            TeacherDto teacher = teacherDtoMapper.MapInstance(await teacherRepository.GetById(id));
-            IEnumerable<CourseModel> coursesTeached = await courseRepository.FindCoursesByTeacherId(id);
-            teacher.TeachedCourses = courseDtoMapper.MapList(coursesTeached).ToList();
+    public async Task<TeacherDto> GetSingle(int id)
+    {
+        TeacherDto teacher = teacherDtoMapper.MapInstance(await teacherRepository.GetById(id));
+        IEnumerable<CourseModel> coursesTeached = await courseRepository.FindCoursesByTeacherId(id);
+        teacher.TeachedCourses = courseDtoMapper.MapList(coursesTeached).ToList();
 
-            return teacher;
-        }
+        return teacher;
+    }
 
-        public async Task<bool> IsExists(string key, string value)
-        {
-            return await teacherRepository.IsExists(key, value);
-        }
+    public async Task<bool> IsExists(string key, string value)
+    {
+        return await teacherRepository.IsExists(key, value);
+    }
 
-        public async Task<bool> IsExistsForUpdate(int id, string key, string value)
-        {
-            return await teacherRepository.IsExistsForUpdate(id, key, value);
-        }
+    public async Task<bool> IsExistsForUpdate(int id, string key, string value)
+    {
+        return await teacherRepository.IsExistsForUpdate(id, key, value);
+    }
 
-        public async Task<TeacherDto> Create(TeacherDto dto)
-        {
-            TeacherModel model = teacherModelMapper.MapInstance(dto);
-            model.EntryDate = DateTime.Now;
+    public async Task<TeacherDto> Create(TeacherDto dto)
+    {
+        TeacherModel model = teacherModelMapper.MapInstance(dto);
+        model.EntryDate = DateTime.Now;
 
-            return teacherDtoMapper.MapInstance(await teacherRepository.Create(model));
-        }
+        return teacherDtoMapper.MapInstance(await teacherRepository.Create(model));
+    }
 
-        public async Task Update(TeacherDto updateInputDto)
-        {
-            TeacherModel existingTeacher = await teacherRepository.GetById(updateInputDto.Id);
-            TeacherModel updateInputTeacher = teacherModelMapper.MapInstance(updateInputDto);
+    public async Task Update(TeacherDto updateInputDto)
+    {
+        TeacherModel existingTeacher = await teacherRepository.GetById(updateInputDto.Id);
+        TeacherModel updateInputTeacher = teacherModelMapper.MapInstance(updateInputDto);
 
-            existingTeacher.FullName = updateInputTeacher.FullName;
-            existingTeacher.Position = updateInputTeacher.Position;
-            existingTeacher.Email = updateInputTeacher.Email;
-            existingTeacher.UpdateDate = DateTime.Now;
+        existingTeacher.FullName = updateInputTeacher.FullName;
+        existingTeacher.Position = updateInputTeacher.Position;
+        existingTeacher.Email = updateInputTeacher.Email;
+        existingTeacher.UpdateDate = DateTime.Now;
 
-            await teacherRepository.Update(existingTeacher);
-        }
+        await teacherRepository.Update(existingTeacher);
+    }
 
-        public async Task Delete(int id)
-        {
-            TeacherModel teacher = await teacherRepository.GetById(id);
-            await teacherRepository.Delete(teacher);
-        }
+    public async Task Delete(int id)
+    {
+        TeacherModel teacher = await teacherRepository.GetById(id);
+        await teacherRepository.Delete(teacher);
     }
 }
