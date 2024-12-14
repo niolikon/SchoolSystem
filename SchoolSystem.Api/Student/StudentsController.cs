@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
 
 namespace SchoolSystem.Api.Student;
