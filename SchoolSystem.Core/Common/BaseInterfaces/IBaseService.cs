@@ -1,13 +1,18 @@
-﻿namespace SchoolSystem.Core.Common.BaseInterfaces;
+﻿using System.Linq.Expressions;
 
-public interface IBaseService<ViewModelType> where ViewModelType : class
+namespace SchoolSystem.Core.Common.BaseInterfaces;
+
+public interface IBaseService<DtoType> where DtoType : class
 {
-    Task<IEnumerable<ViewModelType>> GetAll();
-    Task<PaginatedData<ViewModelType>> GetAllPaginated(int pageNumber, int pageSize);
-    Task<ViewModelType> GetSingle(int id);
-    Task<bool> IsExists(string key, string value);
-    Task<bool> IsExistsForUpdate(int id, string key, string value);
-    Task<ViewModelType> Create(ViewModelType model);
-    Task Update(ViewModelType model);
+    Task<IEnumerable<DtoType>> GetAll();
+
+    Task<PaginatedData<DtoType>> GetAllPaginated(int pageNumber, int pageSize);
+
+    Task<DtoType> GetSingle(int id);
+
+    Task<DtoType> Create(DtoType model);
+
+    Task Update(int id, DtoType model);
+
     Task Delete(int id);
 }

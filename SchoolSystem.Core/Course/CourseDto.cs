@@ -19,5 +19,5 @@ public class CourseDto
     public required int TeacherId { get; set; }
     public TeacherDto? Teacher { get; set; }
 
-    public List<StudentDto>? EnrolledStudents { get; set; }
+    public List<StudentDto>? Students { get; set; }
 }

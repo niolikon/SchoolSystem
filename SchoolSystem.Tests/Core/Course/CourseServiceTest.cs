@@ -47,15 +47,15 @@ public class CourseServiceTests
     {
         IEnumerable<CourseModel> coursesInDb = new List<CourseModel>
         {
-                CourseTestData.COURSE_MODEL_ALGEBRA,
-                CourseTestData.COURSE_MODEL_STATISTICS,
-                CourseTestData.COURSE_MODEL_CALCULUS
+                CourseTestData.COURSE_MODEL_2_ALGEBRA,
+                CourseTestData.COURSE_MODEL_3_STATISTICS,
+                CourseTestData.COURSE_MODEL_1_CALCULUS
         };
         List<CourseDto> coursesAsDto = new List<CourseDto>
         {
-                CourseTestData.COURSE_DTO_ALGEBRA,
-                CourseTestData.COURSE_DTO_STATISTICS,
-                CourseTestData.COURSE_DTO_CALCULUS
+                CourseTestData.COURSE_DTO_2_ALGEBRA,
+                CourseTestData.COURSE_DTO_3_STATISTICS,
+                CourseTestData.COURSE_DTO_1_CALCULUS
         };
 
         _courseRepositoryMock.Setup(repo => repo.GetAll())
@@ -72,8 +72,8 @@ public class CourseServiceTests
     [Test]
     public async Task GetSingle_ShouldReturnCourseWithStudentsAndTeacher()
     {
-        var courseModel = CourseTestData.COURSE_MODEL_CALCULUS;
-        var courseAsDto = CourseTestData.COURSE_DTO_CALCULUS;
+        var courseModel = CourseTestData.COURSE_MODEL_1_CALCULUS;
+        var courseAsDto = CourseTestData.COURSE_DTO_1_CALCULUS;
         var studentsEnrolledModel = new List<StudentModel>
         {
             StudentTestData.STUDENT_MODEL_1,
@@ -84,8 +84,8 @@ public class CourseServiceTests
             StudentTestData.STUDENT_DTO_1,
             StudentTestData.STUDENT_DTO_2
         };
-        var teacherModel = TeacherTestData.TEACHER_MODEL_ASSOCIATED;
-        var teacherAsDto = TeacherTestData.TEACHER_DTO_ASSOCIATED;
+        var teacherModel = TeacherTestData.TEACHER_MODEL_2_ASSOCIATED;
+        var teacherAsDto = TeacherTestData.TEACHER_DTO_2_ASSOCIATED;
 
         _courseRepositoryMock
             .Setup(repo => repo.GetById(courseModel.Id))
@@ -116,7 +116,7 @@ public class CourseServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(courseReturned, Is.EqualTo(courseAsDto));
-            Assert.That(courseReturned.EnrolledStudents, Is.EquivalentTo(studentsEnrolledAsDto));
+            Assert.That(courseReturned.Students, Is.EquivalentTo(studentsEnrolledAsDto));
             Assert.That(courseReturned.Teacher, Is.EqualTo(teacherAsDto));
         });
     }
@@ -124,8 +124,8 @@ public class CourseServiceTests
     [Test]
     public async Task Create_ShouldReturnCreatedCourseDto()
     {
-        var courseDto = CourseTestData.COURSE_DTO_STATISTICS;
-        var courseAsModel = CourseTestData.COURSE_MODEL_STATISTICS;
+        var courseDto = CourseTestData.COURSE_DTO_3_STATISTICS;
+        var courseAsModel = CourseTestData.COURSE_MODEL_3_STATISTICS;
         CourseDto courseDtoCreated = new()
         {
             Id = 2345678,

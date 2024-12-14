@@ -39,13 +39,13 @@ public class TeacherServiceTests
     {
         IEnumerable<TeacherModel> teachersInDb = new List<TeacherModel> 
         {
-                TeacherTestData.TEACHER_MODEL_ASSISTANT,
-                TeacherTestData.TEACHER_MODEL_ASSOCIATED
+                TeacherTestData.TEACHER_MODEL_1_ASSISTANT,
+                TeacherTestData.TEACHER_MODEL_2_ASSOCIATED
         };
         List<TeacherDto> teachersAsDto = new List<TeacherDto>
         {
-            TeacherTestData.TEACHER_DTO_ASSISTANT,
-            TeacherTestData.TEACHER_DTO_ASSOCIATED
+            TeacherTestData.TEACHER_DTO_1_ASSISTANT,
+            TeacherTestData.TEACHER_DTO_2_ASSOCIATED
         };
 
         _teacherRepositoryMock.Setup(repo => repo.GetAll())
@@ -62,17 +62,17 @@ public class TeacherServiceTests
     [Test]
     public async Task GetSingle_ShouldReturnTeacherWithCourses()
     {
-        var teacherModel = TeacherTestData.TEACHER_MODEL_ASSISTANT;
-        var teacherAsDto = TeacherTestData.TEACHER_DTO_ASSISTANT;
+        var teacherModel = TeacherTestData.TEACHER_MODEL_1_ASSISTANT;
+        var teacherAsDto = TeacherTestData.TEACHER_DTO_1_ASSISTANT;
         var coursesTeachedModel = new List<CourseModel>
         {
-            CourseTestData.COURSE_MODEL_CALCULUS,
-            CourseTestData.COURSE_MODEL_STATISTICS
+            CourseTestData.COURSE_MODEL_1_CALCULUS,
+            CourseTestData.COURSE_MODEL_3_STATISTICS
         };
         var coursesTeachedAsDto = new List<CourseDto> 
         {
-            CourseTestData.COURSE_DTO_CALCULUS,
-            CourseTestData.COURSE_DTO_STATISTICS
+            CourseTestData.COURSE_DTO_1_CALCULUS,
+            CourseTestData.COURSE_DTO_3_STATISTICS
         };
 
         _teacherRepositoryMock
@@ -96,15 +96,15 @@ public class TeacherServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(teacherReturned, Is.EqualTo(teacherAsDto));
-            Assert.That(teacherReturned.TeachedCourses, Is.EquivalentTo(coursesTeachedAsDto));
+            Assert.That(teacherReturned.Courses, Is.EquivalentTo(coursesTeachedAsDto));
         });
     }
 
     [Test]
     public async Task Create_ShouldReturnCreatedTeacherDto()
     {
-        var teacherDto = TeacherTestData.TEACHER_DTO_ASSISTANT;
-        var teacherAsModel = TeacherTestData.TEACHER_MODEL_ASSISTANT;
+        var teacherDto = TeacherTestData.TEACHER_DTO_1_ASSISTANT;
+        var teacherAsModel = TeacherTestData.TEACHER_MODEL_1_ASSISTANT;
         TeacherDto teacherDtoCreated = new () {
             Id = 1234567,
             FullName = teacherDto.FullName,

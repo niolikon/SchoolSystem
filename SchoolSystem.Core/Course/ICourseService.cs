@@ -1,4 +1,5 @@
 ﻿using SchoolSystem.Core.Common.BaseInterfaces;
+using SchoolSystem.Core.Student;
 
 
 namespace SchoolSystem.Core.Course;

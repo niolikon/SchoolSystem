@@ -14,5 +14,5 @@ public class StudentDto
     [Required, DataType(DataType.EmailAddress), StringLength(maximumLength: 100, MinimumLength = 5)]
     public required string Email { get; set; }
 
-    public List<CourseDto>? EnrolledCourses { get; set; }
+    public List<CourseDto>? Courses { get; set; }
 }

@@ -1,4 +1,7 @@
-﻿using SchoolSystem.Core.Student;
+﻿using SchoolSystem.Core.Course;
+using SchoolSystem.Core.CourseEnrollment;
+using SchoolSystem.Core.Student;
+using SchoolSystem.Tests.Core.Course;
 
 
 namespace SchoolSystem.Tests.Core.Student;
@@ -59,4 +62,27 @@ public static class StudentTestData
             yield return new TestCaseData(STUDENT_MODEL_2, STUDENT_DTO_2);
         }
     }
+
+    public static IEnumerable<CourseEnrollmentModel> STUDENT_MODEL_1_ENROLLMENTS = new List<CourseEnrollmentModel>
+    {
+        new CourseEnrollmentModel { StudentId = STUDENT_MODEL_1.Id, CourseId = CourseTestData.COURSE_MODEL_2_ALGEBRA.Id },
+        new CourseEnrollmentModel { StudentId = STUDENT_MODEL_1.Id, CourseId = CourseTestData.COURSE_MODEL_1_CALCULUS.Id }
+    };
+
+    public static IEnumerable<CourseModel> STUDENT_MODEL_1_COURSES = new List<CourseModel>
+    {
+        CourseTestData.COURSE_MODEL_2_ALGEBRA,
+        CourseTestData.COURSE_MODEL_1_CALCULUS
+    };
+
+
+    public static IEnumerable<CourseEnrollmentModel> STUDENT_MODEL_2_ENROLLMENTS = new List<CourseEnrollmentModel>
+    {
+        new CourseEnrollmentModel { StudentId = STUDENT_MODEL_2.Id, CourseId = CourseTestData.COURSE_MODEL_3_STATISTICS.Id }
+    };
+
+    public static IEnumerable<CourseModel> STUDENT_MODEL_2_COURSES = new List<CourseModel>
+    {
+        CourseTestData.COURSE_MODEL_3_STATISTICS
+    };
 }

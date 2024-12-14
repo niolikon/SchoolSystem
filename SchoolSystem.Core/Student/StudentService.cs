@@ -29,19 +29,9 @@ public class StudentService(
     {
         StudentDto student = studentDtoMapper.MapInstance(await studentRepository.GetById(id));
         IEnumerable<CourseModel> coursesEnrolled = await courseRepository.FindCoursesByStudentId(id);
-        student.EnrolledCourses = courseDtoMapper.MapList(coursesEnrolled).ToList();
+        student.Courses = courseDtoMapper.MapList(coursesEnrolled).ToList();
 
         return student;
-    }
-
-    public async Task<bool> IsExists(string key, string value)
-    {
-        return await studentRepository.IsExists(key, value);
-    }
-
-    public async Task<bool> IsExistsForUpdate(int id, string key, string value)
-    {
-        return await studentRepository.IsExistsForUpdate(id, key, value);
     }
 
     public async Task<StudentDto> Create(StudentDto dto)
@@ -52,9 +42,9 @@ public class StudentService(
         return studentDtoMapper.MapInstance(await studentRepository.Create(model));
     }
 
-    public async Task Update(StudentDto updateInputDto)
+    public async Task Update(int id, StudentDto updateInputDto)
     {
-        StudentModel existingStudent = await studentRepository.GetById(updateInputDto.Id);
+        StudentModel existingStudent = await studentRepository.GetById(id);
         StudentModel updateInputStudent = studentModelMapper.MapInstance(updateInputDto);
 
         existingStudent.FullName = updateInputStudent.FullName;

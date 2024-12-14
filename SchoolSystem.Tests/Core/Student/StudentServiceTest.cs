@@ -66,13 +66,13 @@ public class StudentServiceTests
         var studentAsDto = StudentTestData.STUDENT_DTO_2;
         var coursesEnrolledModel = new List<CourseModel>
         {
-            CourseTestData.COURSE_MODEL_ALGEBRA,
-            CourseTestData.COURSE_MODEL_STATISTICS
+            CourseTestData.COURSE_MODEL_2_ALGEBRA,
+            CourseTestData.COURSE_MODEL_3_STATISTICS
         };
         var coursesEnrolledAsDto = new List<CourseDto>
         {
-            CourseTestData.COURSE_DTO_ALGEBRA,
-            CourseTestData.COURSE_DTO_STATISTICS
+            CourseTestData.COURSE_DTO_2_ALGEBRA,
+            CourseTestData.COURSE_DTO_3_STATISTICS
         };
 
         _studentRepositoryMock
@@ -96,7 +96,7 @@ public class StudentServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(studentReturned, Is.EqualTo(studentAsDto));
-            Assert.That(studentReturned.EnrolledCourses, Is.EquivalentTo(coursesEnrolledAsDto));
+            Assert.That(studentReturned.Courses, Is.EquivalentTo(coursesEnrolledAsDto));
         });
     }
 

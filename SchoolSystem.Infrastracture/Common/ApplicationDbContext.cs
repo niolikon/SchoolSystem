@@ -1,20 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolSystem.Core.Course;
+using SchoolSystem.Core.CourseEnrollment;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
 
 
 namespace SchoolSystem.Infrastracture.Common;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public DbSet<CourseModel> Courses { get; set; }
-    public DbSet<StudentModel> Students { get; set; }
-    public DbSet<TeacherModel> Teachers { get; set; }
+    public DbSet<CourseModel> Courses => Set<CourseModel>();
+    public DbSet<CourseEnrollmentModel> CourseEnrollment => Set<CourseEnrollmentModel>();
+    public DbSet<StudentModel> Students => Set<StudentModel>();
+    public DbSet<TeacherModel> Teachers => Set<TeacherModel>();
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        optionsBuilder.UseSqlServer(
-            @"Server=(localdb)\mssqllocaldb;Database=Blogging;Trusted_Connection=True;ConnectRetryCount=0");
+        modelBuilder.Entity<CourseEnrollmentModel>()
+            .HasKey(sc => new { sc.StudentId, sc.CourseId });
+
+        modelBuilder.Entity<CourseEnrollmentModel>()
+            .HasOne(sc => sc.Student)
+            .WithMany(s => s.Enrollments)
+            .HasForeignKey(sc => sc.StudentId);
+
+        modelBuilder.Entity<CourseEnrollmentModel>()
+            .HasOne(sc => sc.Course)
+            .WithMany(c => c.Enrollments)
+            .HasForeignKey(sc => sc.CourseId);
     }
 }

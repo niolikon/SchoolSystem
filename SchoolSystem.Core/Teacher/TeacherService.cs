@@ -29,19 +29,9 @@ public class TeacherService(
     {
         TeacherDto teacher = teacherDtoMapper.MapInstance(await teacherRepository.GetById(id));
         IEnumerable<CourseModel> coursesTeached = await courseRepository.FindCoursesByTeacherId(id);
-        teacher.TeachedCourses = courseDtoMapper.MapList(coursesTeached).ToList();
+        teacher.Courses = courseDtoMapper.MapList(coursesTeached).ToList();
 
         return teacher;
-    }
-
-    public async Task<bool> IsExists(string key, string value)
-    {
-        return await teacherRepository.IsExists(key, value);
-    }
-
-    public async Task<bool> IsExistsForUpdate(int id, string key, string value)
-    {
-        return await teacherRepository.IsExistsForUpdate(id, key, value);
     }
 
     public async Task<TeacherDto> Create(TeacherDto dto)
@@ -52,9 +42,9 @@ public class TeacherService(
         return teacherDtoMapper.MapInstance(await teacherRepository.Create(model));
     }
 
-    public async Task Update(TeacherDto updateInputDto)
+    public async Task Update(int id, TeacherDto updateInputDto)
     {
-        TeacherModel existingTeacher = await teacherRepository.GetById(updateInputDto.Id);
+        TeacherModel existingTeacher = await teacherRepository.GetById(id);
         TeacherModel updateInputTeacher = teacherModelMapper.MapInstance(updateInputDto);
 
         existingTeacher.FullName = updateInputTeacher.FullName;

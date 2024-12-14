@@ -2,6 +2,7 @@
 using SchoolSystem.Core.Common;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
+using System.Collections.Generic;
 
 
 namespace SchoolSystem.Core.Course;
@@ -32,21 +33,13 @@ public class CourseService(
     {
         CourseDto course = courseDtoMapper.MapInstance(await courseRepository.GetById(id));
         IEnumerable<StudentModel> studentsEnrolled = await studentRepository.FindStudentsByCourseId(id);
-        course.EnrolledStudents = studentDtoMapper.MapList(studentsEnrolled).ToList();
+        course.Students = studentDtoMapper.MapList(studentsEnrolled).ToList();
+        //course.Students.ForEach(s => s.Courses = null);
         TeacherModel teacher = await teacherRepository.GetById(course.TeacherId);
         course.Teacher = teacherDtoMapper.MapInstance(teacher);
+        //course.Teacher.Courses = null;
 
         return course;
-    }
-
-    public async Task<bool> IsExists(string key, string value)
-    {
-        return await courseRepository.IsExists(key, value);
-    }
-
-    public async Task<bool> IsExistsForUpdate(int id, string key, string value)
-    {
-        return await courseRepository.IsExistsForUpdate(id, key, value);
     }
 
     public async Task<CourseDto> Create(CourseDto dto)
@@ -57,9 +50,9 @@ public class CourseService(
         return courseDtoMapper.MapInstance(await courseRepository.Create(model));
     }
 
-    public async Task Update(CourseDto updateInputDto)
+    public async Task Update(int id, CourseDto updateInputDto)
     {
-        CourseModel existingCourse = await courseRepository.GetById(updateInputDto.Id);
+        CourseModel existingCourse = await courseRepository.GetById(id);
         CourseModel updateInputCourse = courseModelMapper.MapInstance(updateInputDto);
 
         existingCourse.Name = updateInputCourse.Name;

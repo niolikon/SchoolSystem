@@ -18,9 +18,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public async Task<IEnumerable<T>> GetAll()
     {
-        var data = await _dbContext.Set<T>()
-            .AsNoTracking()
-            .ToListAsync();
+        var data = await _dbContext.Set<T>().ToListAsync();
 
         return data;
     }
@@ -29,8 +27,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         var query = _dbContext.Set<T>()
             .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .AsNoTracking();
+            .Take(pageSize);
 
         var data = await query.ToListAsync();
         var totalCount = await _dbContext.Set<T>().CountAsync();
@@ -46,31 +43,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return data;
     }
 
-    public async Task<bool> IsExists<Tvalue>(string key, Tvalue value)
+    public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
     {
-        var parameter = Expression.Parameter(typeof(T), "x");
-        var property = Expression.Property(parameter, key);
-        var constant = Expression.Constant(value);
-        var equality = Expression.Equal(property, constant);
-        var lambda = Expression.Lambda<Func<T, bool>>(equality, parameter);
-
-        return await _dbContext.Set<T>().AnyAsync(lambda);
-    }
-
-    public async Task<bool> IsExistsForUpdate<Tid>(Tid id, string key, string value)
-    {
-        var parameter = Expression.Parameter(typeof(T), "x");
-        var property = Expression.Property(parameter, key);
-        var constant = Expression.Constant(value);
-        var equality = Expression.Equal(property, constant);
-
-        var idProperty = Expression.Property(parameter, "Id");
-        var idEquality = Expression.NotEqual(idProperty, Expression.Constant(id));
-
-        var combinedExpression = Expression.AndAlso(equality, idEquality);
-        var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
-
-        return await _dbContext.Set<T>().AnyAsync(lambda);
+        return await _dbContext.Set<T>().Where(predicate).ToListAsync();
     }
 
     public async Task<T> Create(T model)
@@ -101,10 +76,5 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     public async Task SaveChangeAsync()
     {
         await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
-    {
-        return await _dbContext.Set<T>().Where(predicate).ToListAsync();
     }
 }

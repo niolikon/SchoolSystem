@@ -1,5 +1,7 @@
 ﻿using SchoolSystem.Core.Course;
 using AutoMapper;
+using SchoolSystem.Core.Common.BaseInterfaces;
+using SchoolSystem.Core.Common.BaseClasses;
 
 
 namespace SchoolSystem.Tests.Core.Course;
@@ -13,11 +15,15 @@ public class MappingProfile : Profile
     }
 }
 
+[TestFixture]
 public class CourseMapperTest
 {
-    private readonly IMapper _mapper;
+    private IBaseMapper<CourseModel, CourseDto> _courseDtoMapper;
+    private IBaseMapper<CourseDto, CourseModel> _courseModelMapper;
 
-    public CourseMapperTest()
+
+    [SetUp]
+    public void Setup()
     {
         var config = new MapperConfiguration(
             cfg =>
@@ -25,13 +31,15 @@ public class CourseMapperTest
                 cfg.AddProfile<MappingProfile>();
             });
 
-        _mapper = config.CreateMapper();
+        IMapper _mapper = config.CreateMapper();
+        _courseDtoMapper = new BaseMapper<CourseModel, CourseDto>(_mapper);
+        _courseModelMapper = new BaseMapper<CourseDto, CourseModel>(_mapper);
     }
 
     [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseModelTestCases))]
     public void Should_Map_Model_To_Dto(CourseModel model)
     {
-        var dto = _mapper.Map<CourseDto>(model);
+        var dto = _courseDtoMapper.MapInstance(model);
 
         Assert.Multiple(() =>
         {
@@ -45,7 +53,7 @@ public class CourseMapperTest
     [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseDtoTestCases))]
     public void Should_Map_Dto_To_Model(CourseDto dto)
     {
-        var model = _mapper.Map<CourseModel>(dto);
+        var model = _courseModelMapper.MapInstance(dto);
 
         Assert.Multiple(() =>
         {
@@ -60,8 +68,8 @@ public class CourseMapperTest
     [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseModelAndRelatedDtoTestCases))]
     public void Should_Complete_RoundTrip(CourseModel model, CourseDto dto)
     {
-        var mappedDto = _mapper.Map<CourseDto>(model);
-        var mappedModel = _mapper.Map<CourseModel>(mappedDto);
+        var mappedDto = _courseDtoMapper.MapInstance(model);
+        var mappedModel = _courseModelMapper.MapInstance(mappedDto);
 
         Assert.Multiple(() =>
         {
