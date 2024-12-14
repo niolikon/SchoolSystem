@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Course;
 
-public class CourseRepository : BaseRepository<CourseModel>, ICourseRepository
+public class CourseRepository : BaseRepository<CourseModel, int>, ICourseRepository
 {
     public CourseRepository(ApplicationDbContext dbContext) : base(dbContext)
     {

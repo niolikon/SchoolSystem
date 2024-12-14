@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSystem.Infrastracture
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSystem.Tests", "SchoolSystem.Tests\SchoolSystem.Tests.csproj", "{BB879623-CF15-4472-B216-F8CA80A9D2B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSystem.IntegrationTests", "SchoolSystem.IntegrationTests\SchoolSystem.IntegrationTests.csproj", "{B55BC8EE-9656-4986-AC20-E1D5D9508B6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{BB879623-CF15-4472-B216-F8CA80A9D2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB879623-CF15-4472-B216-F8CA80A9D2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB879623-CF15-4472-B216-F8CA80A9D2B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B55BC8EE-9656-4986-AC20-E1D5D9508B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B55BC8EE-9656-4986-AC20-E1D5D9508B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B55BC8EE-9656-4986-AC20-E1D5D9508B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B55BC8EE-9656-4986-AC20-E1D5D9508B6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

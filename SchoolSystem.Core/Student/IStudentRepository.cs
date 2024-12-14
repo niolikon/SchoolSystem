@@ -3,7 +3,7 @@
 
 namespace SchoolSystem.Core.Student;
 
-public interface IStudentRepository : IBaseRepository<StudentModel>
+public interface IStudentRepository : IBaseRepository<StudentModel, int>
 {
     Task<IEnumerable<StudentModel>> FindStudentsByCourseId(int courseId);
 }

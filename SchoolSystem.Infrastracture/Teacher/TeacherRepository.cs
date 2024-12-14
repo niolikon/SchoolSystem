@@ -4,7 +4,7 @@ using SchoolSystem.Core.Teacher;
 
 namespace SchoolSystem.Infrastracture.Teacher;
 
-public class TeacherRepository : BaseRepository<TeacherModel>, ITeacherRepository
+public class TeacherRepository : BaseRepository<TeacherModel, int>, ITeacherRepository
 {
     public TeacherRepository(ApplicationDbContext dbContext) : base(dbContext)
     {

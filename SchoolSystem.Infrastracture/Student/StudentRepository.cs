@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Student;
 
-public class StudentRepository : BaseRepository<StudentModel>, IStudentRepository
+public class StudentRepository : BaseRepository<StudentModel, int>, IStudentRepository
 {
     public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)
     {

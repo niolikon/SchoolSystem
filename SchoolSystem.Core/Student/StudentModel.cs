@@ -1,4 +1,5 @@
 ﻿using SchoolSystem.Core.Common.BaseClasses;
+using SchoolSystem.Core.Course;
 using SchoolSystem.Core.CourseEnrollment;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,4 +17,6 @@ public class StudentModel : BaseModel<int>
     public required string Email { get; set; }
 
     public virtual ICollection<CourseEnrollmentModel>? Enrollments { get; set; }
+
+    public StudentModel Clone => (StudentModel) MemberwiseClone();
 }

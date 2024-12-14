@@ -1,24 +1,25 @@
-﻿using System.Linq.Expressions;
+﻿using SchoolSystem.Core.Common.BaseClasses;
+using System.Linq.Expressions;
 
 namespace SchoolSystem.Core.Common.BaseInterfaces;
 
-public interface IBaseRepository<ModelType> where ModelType : class
+public interface IBaseRepository<TModel, Tid> where TModel : BaseModel<Tid>
 {
-    Task<IEnumerable<ModelType>> GetAll();
+    Task<IEnumerable<TModel>> GetAll();
 
-    Task<PaginatedData<ModelType>> GetPaginatedData(int pageNumber, int pageSize);
+    Task<PaginatedData<TModel>> GetPaginatedData(int pageNumber, int pageSize);
 
-    Task<ModelType> GetById<Tid>(Tid id);
+    Task<TModel> GetById(Tid id);
 
-    Task<IEnumerable<ModelType>> Find(Expression<Func<ModelType, bool>> predicate);
+    Task<IEnumerable<TModel>> Find(Expression<Func<TModel, bool>> predicate);
 
-    Task<ModelType> Create(ModelType model);
+    Task<TModel> Create(TModel model);
 
-    Task CreateRange(List<ModelType> model);
+    Task CreateRange(List<TModel> model);
 
-    Task Update(ModelType model);
+    Task Update(TModel model);
 
-    Task Delete(ModelType model);
+    Task Delete(TModel model);
 
     Task SaveChangeAsync();
 }

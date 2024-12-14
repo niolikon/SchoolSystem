@@ -2,7 +2,7 @@
 
 namespace SchoolSystem.Core.Course;
 
-public interface ICourseRepository : IBaseRepository<CourseModel>
+public interface ICourseRepository : IBaseRepository<CourseModel, int>
 {
     Task<IEnumerable<CourseModel>> FindCoursesByStudentId(int studentId);
     Task<IEnumerable<CourseModel>> FindCoursesByTeacherId(int teacherId);

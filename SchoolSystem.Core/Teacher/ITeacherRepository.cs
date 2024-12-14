@@ -3,6 +3,6 @@
 
 namespace SchoolSystem.Core.Teacher;
 
-public interface ITeacherRepository : IBaseRepository<TeacherModel>
+public interface ITeacherRepository : IBaseRepository<TeacherModel, int>
 {
 }

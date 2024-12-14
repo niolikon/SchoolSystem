@@ -19,4 +19,6 @@ public class TeacherModel : BaseModel<int>
     public required string Email { get; set; }
 
     public virtual ICollection<CourseModel>? Courses { get; set; }
+
+    public TeacherModel Clone => (TeacherModel) MemberwiseClone();
 }

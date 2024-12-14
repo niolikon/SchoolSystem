@@ -17,9 +17,11 @@ public class CourseModel : BaseModel<int>
     public required int Credits { get; set; }
 
     [Required]
-    public required int TeacherId { get; set; }
+    public int TeacherId { get; set; }
     [ForeignKey(nameof(TeacherId))]
     public virtual TeacherModel? Teacher { get; set; }
 
     public virtual ICollection<CourseEnrollmentModel>? Enrollments { get; set; }
+
+    public CourseModel Clone => (CourseModel) MemberwiseClone();
 }
