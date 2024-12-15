@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using SchoolSystem.Infrastracture.Common;
 using SchoolSystem.Api.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,11 +17,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.RegisterService();
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(); /*
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    });
+    }) */;
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -51,3 +51,8 @@ app.UseRouting();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+
+}
