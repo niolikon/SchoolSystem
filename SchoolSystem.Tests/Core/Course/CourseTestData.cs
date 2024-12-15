@@ -30,15 +30,12 @@ public static class CourseTestData
         TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
     };
 
-    public static IEnumerable<TestCaseData> CourseModelTestCases
-    {
-        get
-        {
-            yield return new TestCaseData(COURSE_MODEL_1_CALCULUS);
-            yield return new TestCaseData(COURSE_MODEL_2_ALGEBRA);
-            yield return new TestCaseData(COURSE_MODEL_3_STATISTICS);
-        }
-    }
+    public static readonly IEnumerable<object[]> CourseModelTestCases =
+    [
+        [COURSE_MODEL_1_CALCULUS],
+        [COURSE_MODEL_2_ALGEBRA],
+        [COURSE_MODEL_3_STATISTICS]
+    ];
 
     public static readonly CourseDto COURSE_DTO_1_CALCULUS = new()
     {
@@ -64,23 +61,17 @@ public static class CourseTestData
         TeacherId = TeacherTestData.TEACHER_DTO_1_ASSISTANT.Id
     };
 
-    public static IEnumerable<TestCaseData> CourseDtoTestCases
-    {
-        get
-        {
-            yield return new TestCaseData(COURSE_DTO_1_CALCULUS);
-            yield return new TestCaseData(COURSE_DTO_2_ALGEBRA);
-            yield return new TestCaseData(COURSE_DTO_3_STATISTICS);
-        }
-    }
+    public static readonly IEnumerable<object[]> CourseDtoTestCases =
+    [
+        [COURSE_DTO_1_CALCULUS],
+        [COURSE_DTO_2_ALGEBRA],
+        [COURSE_DTO_3_STATISTICS],
+    ];
 
-    public static IEnumerable<TestCaseData> CourseModelAndRelatedDtoTestCases
-    {
-        get
-        {
-            yield return new TestCaseData(COURSE_MODEL_1_CALCULUS, COURSE_DTO_1_CALCULUS);
-            yield return new TestCaseData(COURSE_MODEL_2_ALGEBRA, COURSE_DTO_2_ALGEBRA);
-            yield return new TestCaseData(COURSE_MODEL_3_STATISTICS, COURSE_DTO_3_STATISTICS);
-        }
-    }
+    public static readonly IEnumerable<object[]> CourseModelAndRelatedDtoTestCases =
+    [
+        [COURSE_MODEL_1_CALCULUS, COURSE_DTO_1_CALCULUS],
+        [COURSE_MODEL_2_ALGEBRA, COURSE_DTO_2_ALGEBRA],
+        [COURSE_MODEL_3_STATISTICS, COURSE_DTO_3_STATISTICS],
+    ];
 }

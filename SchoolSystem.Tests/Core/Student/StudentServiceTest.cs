@@ -1,13 +1,13 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Tests.Core.Course;
 
-
 namespace SchoolSystem.Tests.Core.Student;
 
-[TestFixture]
+
 public class StudentServiceTests
 {
     private Mock<IBaseMapper<StudentModel, StudentDto>> _studentDtoMapperMock;
@@ -17,8 +17,7 @@ public class StudentServiceTests
     private Mock<ICourseRepository> _courseRepositoryMock;
     private StudentService studentService;
 
-    [SetUp]
-    public void Setup()
+    public StudentServiceTests()
     {
         _studentDtoMapperMock = new Mock<IBaseMapper<StudentModel, StudentDto>>();
         _studentModelMapperMock = new Mock<IBaseMapper<StudentDto, StudentModel>>();
@@ -34,8 +33,8 @@ public class StudentServiceTests
             _courseRepositoryMock.Object);
     }
 
-    [Test]
-    public async Task GetAll_ReturnAll()
+    [Fact]
+    public async Task Should_Return_All_On_Get_All()
     {
         IEnumerable<StudentModel> studentsInDb = new List<StudentModel>
         {
@@ -56,11 +55,11 @@ public class StudentServiceTests
 
         IEnumerable<StudentDto> studentsReturned = await studentService.GetAll();
 
-        Assert.That(studentsReturned, Is.EquivalentTo(studentsAsDto));
+        studentsReturned.Should().BeEquivalentTo(studentsAsDto);
     }
 
-    [Test]
-    public async Task GetSingle_ShouldReturnStudentWithCourses()
+    [Fact]
+    public async Task Should_Return_Correct_Data_On_GetSingle()
     {
         var studentModel = StudentTestData.STUDENT_MODEL_2;
         var studentAsDto = StudentTestData.STUDENT_DTO_2;
@@ -93,15 +92,12 @@ public class StudentServiceTests
 
         StudentDto studentReturned = await studentService.GetSingle(studentModel.Id);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(studentReturned, Is.EqualTo(studentAsDto));
-            Assert.That(studentReturned.Courses, Is.EquivalentTo(coursesEnrolledAsDto));
-        });
+        studentReturned.Should().Be(studentAsDto);
+        studentReturned.Courses.Should().BeEquivalentTo(coursesEnrolledAsDto);
     }
 
-    [Test]
-    public async Task Create_ShouldReturnCreatedStudentDto()
+    [Fact]
+    public async Task Should_Return_Created_Data_On_Create()
     {
         var studentDto = StudentTestData.STUDENT_DTO_2;
         var studentAsModel = StudentTestData.STUDENT_MODEL_2;
@@ -126,10 +122,7 @@ public class StudentServiceTests
 
         StudentDto studentReturned = await studentService.Create(studentDto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(studentReturned.FullName, Is.EqualTo(studentDtoCreated.FullName));
-            Assert.That(studentReturned.Email, Is.EqualTo(studentDtoCreated.Email));
-        });
+        studentReturned.FullName.Should().Be(studentDtoCreated.FullName);
+        studentReturned.Email.Should().Be(studentDtoCreated.Email);
     }
 }

@@ -1,10 +1,11 @@
-﻿using SchoolSystem.Core.Student;
+﻿using FluentAssertions;
 using AutoMapper;
+using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common.BaseClasses;
 
-
 namespace SchoolSystem.Tests.Core.Student;
+
 
 public class MappingProfile : Profile
 {
@@ -15,15 +16,12 @@ public class MappingProfile : Profile
     }
 }
 
-[TestFixture]
 public class StudentMapperTest
 {
-    private IBaseMapper<StudentModel, StudentDto> _studentDtoMapper;
-    private IBaseMapper<StudentDto, StudentModel> _studentModelMapper;
+    private IBaseMapper<StudentModel, StudentDto> _courseDtoMapper;
+    private IBaseMapper<StudentDto, StudentModel> _courseModelMapper;
 
-
-    [SetUp]
-    public void Setup()
+    public StudentMapperTest()
     {
         var config = new MapperConfiguration(
             cfg =>
@@ -32,51 +30,44 @@ public class StudentMapperTest
             });
 
         IMapper _mapper = config.CreateMapper();
-        _studentDtoMapper = new BaseMapper<StudentModel, StudentDto>(_mapper);
-        _studentModelMapper = new BaseMapper<StudentDto, StudentModel>(_mapper);
+        _courseDtoMapper = new BaseMapper<StudentModel, StudentDto>(_mapper);
+        _courseModelMapper = new BaseMapper<StudentDto, StudentModel>(_mapper);
     }
 
-    [TestCaseSource(typeof(StudentTestData), nameof(StudentTestData.StudentModelTestCases))]
+    [Theory]
+    [MemberData(nameof(StudentTestData.StudentModelTestCases), MemberType = typeof(StudentTestData))]
     public void Should_Map_Model_To_Dto(StudentModel model)
     {
-        var dto = _studentDtoMapper.MapInstance(model);
+        var dto = _courseDtoMapper.MapInstance(model);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(dto.Id, Is.EqualTo(model.Id));
-            Assert.That(dto.FullName, Is.EqualTo(model.FullName));
-            Assert.That(dto.Email, Is.EqualTo(model.Email));
-        });
+        dto.Id.Should().Be(model.Id);
+        dto.FullName.Should().Be(model.FullName);
+        dto.Email.Should().Be(model.Email);
     }
 
-    [TestCaseSource(typeof(StudentTestData), nameof(StudentTestData.StudentDtoTestCases))]
+    [Theory]
+    [MemberData(nameof(StudentTestData.StudentDtoTestCases), MemberType = typeof(StudentTestData))]
     public void Should_Map_Dto_To_Model(StudentDto dto)
     {
-        var model = _studentModelMapper.MapInstance(dto);
+        var model = _courseModelMapper.MapInstance(dto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(model.Id, Is.EqualTo(dto.Id));
-            Assert.That(model.FullName, Is.EqualTo(dto.FullName));
-            Assert.That(model.Email, Is.EqualTo(dto.Email));
-        });
+        model.Id.Should().Be(dto.Id);
+        model.FullName.Should().Be(dto.FullName);
+        model.Email.Should().Be(dto.Email);
     }
 
-
-    [TestCaseSource(typeof(StudentTestData), nameof(StudentTestData.StudentModelAndRelatedDtoTestCases))]
+    [Theory]
+    [MemberData(nameof(StudentTestData.StudentModelAndRelatedDtoTestCases), MemberType = typeof(StudentTestData))]
     public void Should_Complete_RoundTrip(StudentModel model, StudentDto dto)
     {
-        var mappedDto = _studentDtoMapper.MapInstance(model);
-        var mappedModel = _studentModelMapper.MapInstance(mappedDto);
+        var mappedDto = _courseDtoMapper.MapInstance(model);
+        var mappedModel = _courseModelMapper.MapInstance(mappedDto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(mappedDto.Id, Is.EqualTo(dto.Id));
-            Assert.That(mappedDto.FullName, Is.EqualTo(dto.FullName));
-            Assert.That(mappedDto.Email, Is.EqualTo(dto.Email));
-            Assert.That(mappedModel.Id, Is.EqualTo(model.Id));
-            Assert.That(mappedModel.FullName, Is.EqualTo(model.FullName));
-            Assert.That(mappedModel.Email, Is.EqualTo(model.Email));
-        });
+        mappedDto.Id.Should().Be(dto.Id);
+        mappedDto.FullName.Should().Be(dto.FullName);
+        mappedDto.Email.Should().Be(dto.Email);
+        mappedModel.Id.Should().Be(model.Id);
+        mappedModel.FullName.Should().Be(model.FullName);
+        mappedModel.Email.Should().Be(model.Email);
     }
 }

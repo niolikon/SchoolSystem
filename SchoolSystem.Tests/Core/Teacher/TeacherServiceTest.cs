@@ -1,13 +1,13 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Tests.Core.Course;
 
-
 namespace SchoolSystem.Tests.Core.Teacher;
 
-[TestFixture]
+
 public class TeacherServiceTests
 {
     private Mock<IBaseMapper<TeacherModel, TeacherDto>> _teacherDtoMapperMock;
@@ -17,8 +17,8 @@ public class TeacherServiceTests
     private Mock<ICourseRepository> _courseRepositoryMock;
     private TeacherService teacherService;
 
-    [SetUp]
-    public void Setup()
+
+    public TeacherServiceTests()
     {
         _teacherDtoMapperMock = new Mock<IBaseMapper<TeacherModel, TeacherDto>>();
         _teacherModelMapperMock = new Mock<IBaseMapper<TeacherDto, TeacherModel>>();
@@ -34,8 +34,8 @@ public class TeacherServiceTests
             _courseRepositoryMock.Object);
     }
 
-    [Test]
-    public async Task GetAll_ReturnAll()
+    [Fact]
+    public async Task Should_Return_All_On_Get_All()
     {
         IEnumerable<TeacherModel> teachersInDb = new List<TeacherModel> 
         {
@@ -56,11 +56,11 @@ public class TeacherServiceTests
 
         IEnumerable<TeacherDto> teachersReturned = await teacherService.GetAll();
 
-        Assert.That(teachersReturned, Is.EquivalentTo(teachersAsDto));
+        teachersReturned.Should().BeEquivalentTo(teachersAsDto);
     }
 
-    [Test]
-    public async Task GetSingle_ShouldReturnTeacherWithCourses()
+    [Fact]
+    public async Task Should_Return_Correct_Data_On_GetSingle()
     {
         var teacherModel = TeacherTestData.TEACHER_MODEL_1_ASSISTANT;
         var teacherAsDto = TeacherTestData.TEACHER_DTO_1_ASSISTANT;
@@ -93,15 +93,12 @@ public class TeacherServiceTests
 
         TeacherDto teacherReturned = await teacherService.GetSingle(teacherModel.Id);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(teacherReturned, Is.EqualTo(teacherAsDto));
-            Assert.That(teacherReturned.Courses, Is.EquivalentTo(coursesTeachedAsDto));
-        });
+        teacherReturned.Should().Be(teacherAsDto);
+        teacherReturned.Courses.Should().BeEquivalentTo(coursesTeachedAsDto);
     }
 
-    [Test]
-    public async Task Create_ShouldReturnCreatedTeacherDto()
+    [Fact]
+    public async Task Should_Return_Created_Data_On_Create()
     {
         var teacherDto = TeacherTestData.TEACHER_DTO_1_ASSISTANT;
         var teacherAsModel = TeacherTestData.TEACHER_MODEL_1_ASSISTANT;
@@ -126,11 +123,8 @@ public class TeacherServiceTests
 
         TeacherDto teacherReturned = await teacherService.Create(teacherDto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(teacherReturned.FullName, Is.EqualTo(teacherDtoCreated.FullName));
-            Assert.That(teacherReturned.Position, Is.EqualTo(teacherDtoCreated.Position));
-            Assert.That(teacherReturned.Email, Is.EqualTo(teacherDtoCreated.Email));
-        });
+        teacherReturned.FullName.Should().Be(teacherDtoCreated.FullName);
+        teacherReturned.Position.Should().Be(teacherDtoCreated.Position);
+        teacherReturned.Email.Should().Be(teacherDtoCreated.Email);
     }
 }

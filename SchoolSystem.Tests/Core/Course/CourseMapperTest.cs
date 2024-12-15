@@ -1,8 +1,9 @@
-﻿using SchoolSystem.Core.Course;
+﻿using FluentAssertions;
 using AutoMapper;
+using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common.BaseClasses;
-
+using SchoolSystem.Core.Teacher;
 
 namespace SchoolSystem.Tests.Core.Course;
 
@@ -12,18 +13,17 @@ public class MappingProfile : Profile
     {
         CreateMap<CourseModel, CourseDto>();
         CreateMap<CourseDto, CourseModel>();
+        CreateMap<TeacherModel, TeacherDto>();
+        CreateMap<TeacherDto, TeacherModel>();
     }
 }
 
-[TestFixture]
 public class CourseMapperTest
 {
     private IBaseMapper<CourseModel, CourseDto> _courseDtoMapper;
     private IBaseMapper<CourseDto, CourseModel> _courseModelMapper;
 
-
-    [SetUp]
-    public void Setup()
+    public CourseMapperTest()
     {
         var config = new MapperConfiguration(
             cfg =>
@@ -36,51 +36,44 @@ public class CourseMapperTest
         _courseModelMapper = new BaseMapper<CourseDto, CourseModel>(_mapper);
     }
 
-    [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseModelTestCases))]
+    [Theory]
+    [MemberData(nameof(CourseTestData.CourseModelTestCases), MemberType = typeof(CourseTestData))]
     public void Should_Map_Model_To_Dto(CourseModel model)
     {
         var dto = _courseDtoMapper.MapInstance(model);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(dto.Id, Is.EqualTo(model.Id));
-            Assert.That(dto.Name, Is.EqualTo(model.Name));
-            Assert.That(dto.Credits, Is.EqualTo(model.Credits));
-            Assert.That(dto.TeacherId, Is.EqualTo(model.TeacherId));
-        });
+        dto.Id.Should().Be(model.Id);
+        dto.Name.Should().Be(model.Name);
+        dto.Credits.Should().Be(model.Credits);
+        dto.TeacherId.Should().Be(model.TeacherId);
     }
 
-    [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseDtoTestCases))]
+    [Theory]
+    [MemberData(nameof(CourseTestData.CourseDtoTestCases), MemberType = typeof(CourseTestData))]
     public void Should_Map_Dto_To_Model(CourseDto dto)
     {
         var model = _courseModelMapper.MapInstance(dto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(model.Id, Is.EqualTo(dto.Id));
-            Assert.That(model.Name, Is.EqualTo(dto.Name));
-            Assert.That(model.Credits, Is.EqualTo(dto.Credits));
-            Assert.That(model.TeacherId, Is.EqualTo(dto.TeacherId));
-        });
+        model.Id.Should().Be(dto.Id);
+        model.Name.Should().Be(dto.Name);
+        model.Credits.Should().Be(dto.Credits);
+        model.TeacherId.Should().Be(dto.TeacherId);
     }
 
-
-    [TestCaseSource(typeof(CourseTestData), nameof(CourseTestData.CourseModelAndRelatedDtoTestCases))]
+    [Theory]
+    [MemberData(nameof(CourseTestData.CourseModelAndRelatedDtoTestCases), MemberType = typeof(CourseTestData))]
     public void Should_Complete_RoundTrip(CourseModel model, CourseDto dto)
     {
         var mappedDto = _courseDtoMapper.MapInstance(model);
         var mappedModel = _courseModelMapper.MapInstance(mappedDto);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(mappedDto.Id, Is.EqualTo(dto.Id));
-            Assert.That(mappedDto.Name, Is.EqualTo(dto.Name));
-            Assert.That(mappedDto.Credits, Is.EqualTo(dto.Credits));
-            Assert.That(mappedDto.TeacherId, Is.EqualTo(dto.TeacherId));
-            Assert.That(mappedModel.Id, Is.EqualTo(model.Id));
-            Assert.That(mappedModel.Name, Is.EqualTo(model.Name));
-            Assert.That(mappedModel.Credits, Is.EqualTo(model.Credits));
-            Assert.That(mappedModel.TeacherId, Is.EqualTo(model.TeacherId));
-        });
+        mappedDto.Id.Should().Be(dto.Id);
+        mappedDto.Name.Should().Be(dto.Name);
+        mappedDto.Credits.Should().Be(dto.Credits);
+        mappedDto.TeacherId.Should().Be(dto.TeacherId);
+        mappedModel.Id.Should().Be(model.Id);
+        mappedModel.Name.Should().Be(model.Name);
+        mappedModel.Credits.Should().Be(model.Credits);
+        mappedModel.TeacherId.Should().Be(model.TeacherId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using FluentAssertions;
+using Microsoft.Data.SqlClient;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Course;
@@ -6,11 +7,6 @@ using SchoolSystem.Infrastracture.Student;
 using SchoolSystem.Infrastracture.Teacher;
 using SchoolSystem.IntegrationTests.Common;
 using SchoolSystem.IntegrationTests.Infrastructure.Teacher;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
@@ -42,18 +38,8 @@ public class CourseRepositoryIntegrationTest: IClassFixture<DatabaseContainerPer
         await using (var connection = new SqlConnection(_fixture.ConnectionString))
         {
             await connection.OpenAsync();
-            Assert.Equal(System.Data.ConnectionState.Open, connection.State);
+            connection.State.Should().Be(System.Data.ConnectionState.Open);
         }
-    }
-
-    [Fact]
-    public async Task Should_Count_No_Entities_On_Empty_Repository()
-    {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
-
-        int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
-
-        Assert.Equal(0, courseEntitiesCount);
     }
 
     [Fact]
@@ -66,12 +52,22 @@ public class CourseRepositoryIntegrationTest: IClassFixture<DatabaseContainerPer
         sampleCourse.TeacherId = createdTeacher.Id;
         CourseModel createdCourse = await _courseRepository.Create(sampleCourse);
 
-        Assert.NotNull(createdCourse);
-        Assert.NotEqual(0, createdCourse.Id);
+        createdCourse.Should().NotBeNull();
+        createdCourse.Id.Should().NotBe(0);
     }
 
     [Fact]
-    public async Task Should_Increment_Count_After_Create_Entity()
+    public async Task Should_Count_Zero_On_Empty_Repository()
+    {
+        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+
+        int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
+
+        courseEntitiesCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Should_Count_Increment_On_Create_Entity()
     {
         using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
 
@@ -82,11 +78,11 @@ public class CourseRepositoryIntegrationTest: IClassFixture<DatabaseContainerPer
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
-        Assert.Equal(1, courseEntitiesCount);
+        courseEntitiesCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task Should_Decrement_Count_After_Delete_Entity()
+    public async Task Should_Count_Decrement_On_Delete_Entity()
     {
         using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
 
@@ -99,6 +95,6 @@ public class CourseRepositoryIntegrationTest: IClassFixture<DatabaseContainerPer
         await _courseRepository.Delete(sampleCourse);
         int courseEntitiesCountAfterDelete = (await _courseRepository.GetAll()).Count();
 
-        Assert.True(courseEntitiesCountAfterDelete < courseEntitiesCount);
+        courseEntitiesCountAfterDelete.Should().BeLessThan(courseEntitiesCount);
     }
 }
