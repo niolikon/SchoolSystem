@@ -1,7 +1,6 @@
 ﻿using SchoolSystem.Infrastracture.Common.BaseClasses;
 using SchoolSystem.Infrastracture.Common;
 using SchoolSystem.Core.Student;
-using SchoolSystem.Core.CourseEnrollment;
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Student;
@@ -14,20 +13,14 @@ public class StudentRepository : BaseRepository<StudentModel, int>, IStudentRepo
 
     public async Task<IEnumerable<StudentModel>> FindStudentsByCourseId(int courseId)
     {
-        return await _dbContext.Set<CourseEnrollmentModel>()
-            // Filtering enrollments by courseId
-            .Where(enrollment => enrollment.CourseId == courseId)
-            // Join ..
-            .Join(
-                // ... with table related to StudentModel ...
-                _dbContext.Set<StudentModel>(),
-                // ... using CourseId as join key for CourseEnrollment ...
-                enrollment => enrollment.StudentId,
-                // ... and Id as join key for StudentModel ...
-                student => student.Id,
-                // Results projection, for each couple enrollment, student => Take the student
-                (enrollment, student) => student
-            )
-            .ToListAsync();
+        IQueryable<StudentModel> students = _dbContext.Set<StudentModel>();
+
+        IQueryable<StudentModel> query = 
+            from s in students
+            from c in s.Courses
+            where c.Id == courseId
+            select s;
+        
+        return await query.ToListAsync();
     }
 }

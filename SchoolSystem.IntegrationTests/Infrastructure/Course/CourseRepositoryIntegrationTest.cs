@@ -12,15 +12,15 @@ using Xunit.Abstractions;
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
 
-public class CourseRepositoryIntegrationTest: IClassFixture<DatabaseContainerPerClassFixture>
+public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabaseFixture>
 {
-    private DatabaseContainerPerClassFixture _fixture;
+    private ContainerizedDatabaseFixture _fixture;
     private ITestOutputHelper _output;
     private CourseRepository _courseRepository;
     private StudentRepository _studentRepository;
     private TeacherRepository _teacherRepository;
 
-    public CourseRepositoryIntegrationTest(DatabaseContainerPerClassFixture fixture, ITestOutputHelper output)
+    public CourseRepositoryIntegrationTest(ContainerizedDatabaseFixture fixture, ITestOutputHelper output)
     {
         _fixture = fixture;
         _output = output;

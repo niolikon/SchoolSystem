@@ -1,7 +1,4 @@
-﻿using SchoolSystem.Core.Course;
-using SchoolSystem.Core.CourseEnrollment;
-using SchoolSystem.Core.Student;
-using SchoolSystem.Tests.Core.Course;
+﻿using SchoolSystem.Core.Student;
 
 
 namespace SchoolSystem.Tests.Core.Student;

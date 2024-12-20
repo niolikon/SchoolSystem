@@ -1,8 +1,8 @@
 ﻿using SchoolSystem.Infrastracture.Common.BaseClasses;
 using SchoolSystem.Infrastracture.Common;
 using SchoolSystem.Core.Course;
-using SchoolSystem.Core.CourseEnrollment;
 using Microsoft.EntityFrameworkCore;
+using SchoolSystem.Core.Student;
 
 namespace SchoolSystem.Infrastracture.Course;
 
@@ -14,28 +14,26 @@ public class CourseRepository : BaseRepository<CourseModel, int>, ICourseReposit
 
     public async Task<IEnumerable<CourseModel>> FindCoursesByStudentId(int studentId)
     {
-        return await _dbContext.Set<CourseEnrollmentModel>()
-            // Filtering enrollments by studentId
-            .Where(enrollment => enrollment.StudentId == studentId) 
-            // Join ..
-            .Join(
-                // ... with table related to CourseModel ...
-                _dbContext.Set<CourseModel>(), 
-                // ... using CourseId as join key for CourseEnrollment ...
-                enrollment => enrollment.CourseId,
-                // ... and Id as join key for CourseModel ...
-                course => course.Id,
-                // Results projection, for each couple enrollment, course => Take the course
-                (enrollment, course) => course 
-            )
-            .ToListAsync();
+        IQueryable<CourseModel> courses = _dbContext.Set<CourseModel>();
+
+        IQueryable<CourseModel> query = 
+            from c in courses
+            from s in c.Students
+            where s.Id == studentId
+            select c;
+        
+        return await query.ToListAsync();
     }
 
     public async Task<IEnumerable<CourseModel>> FindCoursesByTeacherId(int teacherId)
     {
-        return await _dbContext.Set<CourseModel>()
-            .Where(course => course.TeacherId == teacherId)
-            .Select(course => course)
-            .ToListAsync();
+        IQueryable<CourseModel> courses = _dbContext.Set<CourseModel>();
+
+        IQueryable<CourseModel> query =
+            from c in courses
+            where c.TeacherId == teacherId
+            select c;
+        
+        return await query.ToListAsync();
     }
 }

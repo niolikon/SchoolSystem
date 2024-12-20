@@ -2,7 +2,6 @@
 using SchoolSystem.Core.Common;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
-using System.Collections.Generic;
 
 
 namespace SchoolSystem.Core.Course;
@@ -66,5 +65,23 @@ public class CourseService(
     {
         CourseModel course = await courseRepository.GetById(id);
         await courseRepository.Delete(course);
+    }
+
+    public async Task<CourseDto> EnrollStudentToCourse(StudentDto student, int courseId)
+    {
+        CourseModel courseModel = await courseRepository.GetById(courseId);
+        StudentModel studentModel = await studentRepository.GetById(student.Id);
+        courseModel.Students.Add(studentModel);
+        await courseRepository.Update(courseModel);
+        return courseDtoMapper.MapInstance(courseModel);
+    }
+
+    public async Task<CourseDto> DisenrollStudentToCourse(StudentDto student, int courseId)
+    {
+        CourseModel courseModel = await courseRepository.GetById(courseId);
+        StudentModel studentModel = await studentRepository.GetById(student.Id);
+        courseModel.Students.Remove(studentModel);
+        await courseRepository.Update(courseModel);
+        return courseDtoMapper.MapInstance(courseModel);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using SchoolSystem.Core.Common.BaseClasses;
 using SchoolSystem.Core.Teacher;
-using SchoolSystem.Core.CourseEnrollment;
+using SchoolSystem.Core.Student;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,7 +21,7 @@ public class CourseModel : BaseModel<int>
     [ForeignKey(nameof(TeacherId))]
     public virtual TeacherModel? Teacher { get; set; }
 
-    public virtual ICollection<CourseEnrollmentModel>? Enrollments { get; set; }
+    public virtual List<StudentModel> Students { get; } = [];
 
     public CourseModel Clone => (CourseModel) MemberwiseClone();
 }
