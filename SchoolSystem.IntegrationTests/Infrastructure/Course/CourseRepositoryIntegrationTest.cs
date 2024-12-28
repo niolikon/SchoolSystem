@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Xunit.Abstractions;
 using Microsoft.Data.SqlClient;
-using System.Linq;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Course;
@@ -35,8 +34,6 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Connection_Be_Available()
     {
-        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
-
         await using (var connection = new SqlConnection(_fixture.ConnectionString))
         {
             await connection.OpenAsync();
@@ -66,7 +63,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Add_Entities_To_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_1);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_1; 
@@ -80,7 +77,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Zero_On_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
@@ -90,7 +87,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Increment_On_Create_Entity()
     {
-        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;
@@ -99,23 +96,22 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
-        courseEntitiesCount.Should().Be(1);
+        courseEntitiesCount.Should().Be(2);
     }
 
     [Fact]
     public async Task Should_Count_Decrement_On_Delete_Entity()
     {
-        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
 
-        TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
-        CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;
-        sampleCourse.TeacherId = createdTeacher.Id;
-        CourseModel createdCourse = await _courseRepository.Create(sampleCourse);
-        int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
+        CourseModel? courseOnDatabase = (await _courseRepository.GetAll()).FirstOrDefault();
+        if (courseOnDatabase != null)
+        {
+            await _courseRepository.Delete(courseOnDatabase);
+        }
 
-        await _courseRepository.Delete(sampleCourse);
         int courseEntitiesCountAfterDelete = (await _courseRepository.GetAll()).Count();
 
-        courseEntitiesCountAfterDelete.Should().BeLessThan(courseEntitiesCount);
+        courseEntitiesCountAfterDelete.Should().BeLessThan(1);
     }
 }

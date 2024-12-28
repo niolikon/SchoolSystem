@@ -7,6 +7,8 @@ namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
 public class CourseRepositoryScenarios
 {
+    public static object[] Empty => [];
+
     public static object[] SingleCourse { 
         get 
         {
