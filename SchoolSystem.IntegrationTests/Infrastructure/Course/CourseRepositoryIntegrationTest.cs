@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Xunit.Abstractions;
 using Microsoft.Data.SqlClient;
+using System.Linq;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Course;
@@ -8,6 +9,7 @@ using SchoolSystem.Infrastracture.Student;
 using SchoolSystem.Infrastracture.Teacher;
 using SchoolSystem.IntegrationTests.Common;
 using SchoolSystem.IntegrationTests.Common.TestData;
+using SchoolSystem.Core.Student;
 
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
@@ -33,7 +35,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Connection_Be_Available()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         await using (var connection = new SqlConnection(_fixture.ConnectionString))
         {
@@ -43,9 +45,28 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     }
 
     [Fact]
+    public async Task Should_PreSeeded_Data_Be_Available()
+    {
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
+
+        CourseModel? courseOnDatabase = (await _courseRepository.GetAll()).FirstOrDefault();
+        StudentModel? studentOnDatabase = (await _studentRepository.GetAll()).FirstOrDefault();
+        TeacherModel? teacherOnDatabase = (await _teacherRepository.GetAll()).FirstOrDefault();
+
+        courseOnDatabase.Should().NotBeNull();
+        studentOnDatabase.Should().NotBeNull();
+        teacherOnDatabase.Should().NotBeNull();
+        courseOnDatabase.Students.Should().Contain(studentOnDatabase);
+        courseOnDatabase.Teacher.Should().Be(teacherOnDatabase);
+        studentOnDatabase.Courses.Should().Contain(courseOnDatabase);
+        teacherOnDatabase.Courses.Should().Contain(courseOnDatabase);
+    }
+
+
+    [Fact]
     public async Task Should_Add_Entities_To_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_1);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_1; 
@@ -59,7 +80,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Zero_On_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
@@ -69,7 +90,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Increment_On_Create_Entity()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;
@@ -84,7 +105,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Decrement_On_Delete_Entity()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;

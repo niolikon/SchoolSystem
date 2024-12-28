@@ -31,7 +31,7 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
     [Fact]
     public async Task Get_All_Should_Return_No_Entities_On_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         var client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
         var returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
@@ -41,7 +41,7 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
     [Fact]
     public async Task Get_All_Should_Return_Entities_On_Not_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
 
         CourseDto courseToAdd = new CourseDto() { Credits = 10, Name = "Test" };
 
@@ -60,7 +60,7 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
     [Fact]
     public async Task Controller_Should_Support_Enrollment_Workflow()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var transactionalDatabaseRollback = new DatabasePostRollbackTransactional(_fixture.Context);
         
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
         TeacherDto teacherToAdd = new TeacherDto()
