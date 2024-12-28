@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.IntegrationTests.Common;
 
-public class DatabaseRollbackTransactional : IDisposable
+public class DatabasePostRollbackTransactional : IDisposable
 {
     private readonly DbContext _dbContext;
     private readonly IDbContextTransaction _transaction;
 
-    public DatabaseRollbackTransactional(DbContext dbContext)
+    public DatabasePostRollbackTransactional(DbContext dbContext)
     {
         _dbContext = dbContext;
         _transaction = _dbContext.Database.BeginTransaction();

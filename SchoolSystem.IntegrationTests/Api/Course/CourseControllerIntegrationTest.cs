@@ -8,7 +8,7 @@ using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Course;
 using SchoolSystem.Infrastracture.Teacher;
 using SchoolSystem.Infrastracture.Student;
-using SchoolSystem.IntegrationTests.Common.TestData;
+using SchoolSystem.IntegrationTests.Infrastructure.Course;
 
 namespace SchoolSystem.IntegrationTests.Api.Course;
 
@@ -31,28 +31,22 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
     [Fact]
     public async Task Get_All_Should_Return_No_Entities_On_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
 
-        var client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        var returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
+        HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
+        IEnumerable<CourseDto> returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
+
         returnedCourses.Should().BeEmpty();
     }
 
     [Fact]
     public async Task Get_All_Should_Return_Entities_On_Not_Empty_Repository()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
-
-        CourseDto courseToAdd = new CourseDto() { Credits = 10, Name = "Test" };
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        HttpResponseMessage coursePostResponse = await client.PostAsJsonAsync("/api/Courses", courseToAdd);
-        coursePostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-        coursePostResponse.Content.Should().NotBeNull();
-        CourseDto? courseCreated = await coursePostResponse.Content.ReadFromJsonAsync<CourseDto>();
-        courseCreated.Should().NotBeNull();
+        IEnumerable<CourseDto> returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
 
-        var returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
         returnedCourses.Should().NotBeEmpty();
     }
     
@@ -60,8 +54,8 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
     [Fact]
     public async Task Controller_Should_Support_Enrollment_Workflow()
     {
-        using var transactionalDatabaseRollback = new DatabaseRollbackTransactional(_fixture.Context);
-        
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
+
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
         TeacherDto teacherToAdd = new TeacherDto()
             { Email = "teacher@email.com", FullName = "Mario Rossi", Position = "Nice" };
