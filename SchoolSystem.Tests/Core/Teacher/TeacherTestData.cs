@@ -31,7 +31,7 @@ public record TeacherTestData
     {
         Id = 1,
         FullName = "Sample Teacher",
-        Position = "AssistantProfessor",
+        Position = AcademicPosition.AssistantProfessor.ToString(),
         Email = "sample.assistant.teacher@uni.ts"
     };
 
@@ -39,7 +39,7 @@ public record TeacherTestData
     {
         Id = 2,
         FullName = "Sample Teacher",
-        Position = "AssociatedProfessor",
+        Position = AcademicPosition.AssociateProfessor.ToString(),
         Email = "sample.associated.teacher@uni.ts"
     };
 
