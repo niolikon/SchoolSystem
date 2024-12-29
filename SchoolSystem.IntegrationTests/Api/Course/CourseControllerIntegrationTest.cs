@@ -34,8 +34,9 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        IEnumerable<CourseDto> returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
+        IEnumerable<CourseDto>? returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
 
+        returnedCourses.Should().NotBeNull();
         returnedCourses.Should().BeEmpty();
     }
 
@@ -45,8 +46,9 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        IEnumerable<CourseDto> returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
+        IEnumerable<CourseDto>? returnedCourses = await client.GetFromJsonAsync<IEnumerable<CourseDto>>("/api/Courses");
 
+        returnedCourses.Should().NotBeNull();
         returnedCourses.Should().NotBeEmpty();
     }
     
@@ -58,7 +60,7 @@ public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDataba
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
         TeacherDto teacherToAdd = new TeacherDto()
-            { Email = "teacher@email.com", FullName = "Mario Rossi", Position = "Nice" };
+            { Email = "teacher@email.com", FullName = "Mario Rossi", Position = "PostdoctoralFellow" };
         HttpResponseMessage teacherPostResponse = await client.PostAsJsonAsync("/api/Teachers", teacherToAdd);
         teacherPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         teacherPostResponse.Content.Should().NotBeNull();

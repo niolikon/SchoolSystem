@@ -17,7 +17,7 @@ public static class MapperConfigurationFactory
                 {
                     Id = src.Teacher.Id,
                     FullName = src.Teacher.FullName,
-                    Position = src.Teacher.Position,
+                    Position = src.Teacher.Position.ToString(),
                     Email = src.Teacher.Email,
                     Courses = null
                 }))
@@ -41,6 +41,7 @@ public static class MapperConfigurationFactory
             cfg.CreateMap<StudentDto, StudentModel>();
 
             cfg.CreateMap<TeacherModel, TeacherDto>()
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position.ToString()))
                 .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Courses.Select(course => new CourseDto
                 {
                     Id = course.Id,
@@ -48,7 +49,8 @@ public static class MapperConfigurationFactory
                     Credits = course.Credits,
                     TeacherId = course.TeacherId
                 })));
-            cfg.CreateMap<TeacherDto, TeacherModel>();
+            cfg.CreateMap<TeacherDto, TeacherModel>()
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => Enum.Parse<AcademicPosition>(src.Position, true)));
         });
 
         return configuration.CreateMapper();

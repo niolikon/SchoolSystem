@@ -9,7 +9,7 @@ public record TeacherTestData
     {
         Id = 1,
         FullName = "Sample Teacher",
-        Position = "Assistant",
+        Position = AcademicPosition.AssistantProfessor,
         Email = "sample.assistant.teacher@uni.ts"
     };
 
@@ -17,7 +17,7 @@ public record TeacherTestData
     {
         Id = 2,
         FullName = "Sample Teacher",
-        Position = "Associated",
+        Position = AcademicPosition.AssociateProfessor,
         Email = "sample.associated.teacher@uni.ts"
     };
 
@@ -31,7 +31,7 @@ public record TeacherTestData
     {
         Id = 1,
         FullName = "Sample Teacher",
-        Position = "Assistant",
+        Position = "AssistantProfessor",
         Email = "sample.assistant.teacher@uni.ts"
     };
 
@@ -39,7 +39,7 @@ public record TeacherTestData
     {
         Id = 2,
         FullName = "Sample Teacher",
-        Position = "Associated",
+        Position = "AssociatedProfessor",
         Email = "sample.associated.teacher@uni.ts"
     };
 
