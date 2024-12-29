@@ -15,10 +15,10 @@ namespace SchoolSystem.IntegrationTests.Api.Course;
 
 public class CourseControllerIntegrationTest : IClassFixture<ContainerizedDatabaseFixture>
 {
-    private ContainerizedDatabaseFixture _fixture;
-    private StudentRepository _studentRepository;
-    private CourseRepository _courseRepository;
-    private TeacherRepository _teacherRepository;
+    private readonly ContainerizedDatabaseFixture _fixture;
+    private readonly StudentRepository _studentRepository;
+    private readonly CourseRepository _courseRepository;
+    private readonly TeacherRepository _teacherRepository;
 
     public CourseControllerIntegrationTest(ContainerizedDatabaseFixture fixture)
     {

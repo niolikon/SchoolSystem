@@ -15,11 +15,11 @@ namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
 public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabaseFixture>
 {
-    private ContainerizedDatabaseFixture _fixture;
-    private ITestOutputHelper _output;
-    private CourseRepository _courseRepository;
-    private StudentRepository _studentRepository;
-    private TeacherRepository _teacherRepository;
+    private readonly ContainerizedDatabaseFixture _fixture;
+    private readonly ITestOutputHelper _output;
+    private readonly CourseRepository _courseRepository;
+    private readonly StudentRepository _studentRepository;
+    private readonly TeacherRepository _teacherRepository;
 
     public CourseRepositoryIntegrationTest(ContainerizedDatabaseFixture fixture, ITestOutputHelper output)
     {
@@ -92,7 +92,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;
         sampleCourse.Teacher = createdTeacher;
-        var _ = await _courseRepository.Create(sampleCourse);
+        await _courseRepository.Create(sampleCourse);
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 

@@ -16,5 +16,5 @@ public class TeacherModel : BaseModel<int>
     [Required, DataType(DataType.EmailAddress), StringLength(maximumLength: 100, MinimumLength = 5)]
     public required string Email { get; set; }
 
-    public virtual List<CourseModel>? Courses { get; set; } = [];
+    public virtual List<CourseModel> Courses { get; set; } = [];
 }

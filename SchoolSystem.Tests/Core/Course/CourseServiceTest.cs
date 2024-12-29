@@ -12,14 +12,14 @@ namespace SchoolSystem.Tests.Core.Course;
 
 public class CourseServiceTests
 {
-    private Mock<IBaseMapper<CourseModel, CourseDto>> _courseDtoMapperMock;
-    private Mock<IBaseMapper<CourseDto, CourseModel>> _courseModelMapperMock;
-    private Mock<ICourseRepository> _courseRepositoryMock;
-    private Mock<IBaseMapper<StudentModel, StudentDto>> _studentDtoMapperMock;
-    private Mock<IStudentRepository> _studentRepositoryMock;
-    private Mock<IBaseMapper<TeacherModel, TeacherDto>> _teacherDtoMapperMock;
-    private Mock<ITeacherRepository> _teacherRepositoryMock;
-    private CourseService courseService;
+    private readonly Mock<IBaseMapper<CourseModel, CourseDto>> _courseDtoMapperMock;
+    private readonly Mock<IBaseMapper<CourseDto, CourseModel>> _courseModelMapperMock;
+    private readonly Mock<ICourseRepository> _courseRepositoryMock;
+    private readonly Mock<IBaseMapper<StudentModel, StudentDto>> _studentDtoMapperMock;
+    private readonly Mock<IStudentRepository> _studentRepositoryMock;
+    private readonly Mock<IBaseMapper<TeacherModel, TeacherDto>> _teacherDtoMapperMock;
+    private readonly Mock<ITeacherRepository> _teacherRepositoryMock;
+    private readonly CourseService _courseService;
 
 
     public CourseServiceTests()
@@ -32,7 +32,7 @@ public class CourseServiceTests
         _teacherDtoMapperMock = new Mock<IBaseMapper<TeacherModel, TeacherDto>>();
         _teacherRepositoryMock = new Mock<ITeacherRepository>();
 
-        courseService = new CourseService(
+        _courseService = new CourseService(
             _courseDtoMapperMock.Object,
             _courseModelMapperMock.Object,
             _courseRepositoryMock.Object,
@@ -64,7 +64,7 @@ public class CourseServiceTests
         _courseDtoMapperMock.Setup(mapper => mapper.MapList(coursesInDb))
             .Returns(coursesAsDto);
 
-        IEnumerable<CourseDto> coursesReturned = await courseService.GetAll();
+        IEnumerable<CourseDto> coursesReturned = await _courseService.GetAll();
 
         coursesReturned.Should().BeEquivalentTo(coursesAsDto);
     }
@@ -94,7 +94,7 @@ public class CourseServiceTests
             .Setup(mapper => mapper.MapInstance(courseAsModel))
             .Returns(courseDtoCreated);
 
-        CourseDto courseReturned = await courseService.Create(courseDto);
+        CourseDto courseReturned = await _courseService.Create(courseDto);
 
         courseReturned.Name.Should().Be(courseDtoCreated.Name);
         courseReturned.Credits.Should().Be(courseDtoCreated.Credits);

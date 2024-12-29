@@ -12,7 +12,7 @@ public abstract class BaseRepository<TModel, Tid> : IBaseRepository<TModel, Tid>
 {
     protected readonly ApplicationDbContext _dbContext;
 
-    public BaseRepository(ApplicationDbContext dbContext)
+    protected BaseRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }

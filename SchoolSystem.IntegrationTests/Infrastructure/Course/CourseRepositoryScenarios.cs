@@ -5,7 +5,7 @@ using SchoolSystem.IntegrationTests.Common.TestData;
 
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
-public class CourseRepositoryScenarios
+public static class CourseRepositoryScenarios
 {
     public static object[] Empty => [];
 

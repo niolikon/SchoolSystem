@@ -12,8 +12,8 @@ namespace SchoolSystem.Tests.Core.Teacher;
 
 public class TeacherMapperTest
 {
-    private IBaseMapper<TeacherModel, TeacherDto> _courseDtoMapper;
-    private IBaseMapper<TeacherDto, TeacherModel> _courseModelMapper;
+    private readonly IBaseMapper<TeacherModel, TeacherDto> _courseDtoMapper;
+    private readonly IBaseMapper<TeacherDto, TeacherModel> _courseModelMapper;
 
     public TeacherMapperTest()
     {
