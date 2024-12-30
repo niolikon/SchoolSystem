@@ -16,6 +16,12 @@ public class DatabasePostRollbackTransactional : IDisposable
 
     public void Dispose()
     {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
         _transaction.Rollback();
         _transaction.Dispose();
     }

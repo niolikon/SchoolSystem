@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Xunit.Abstractions;
 using Microsoft.Data.SqlClient;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Teacher;
@@ -9,22 +8,21 @@ using SchoolSystem.Infrastracture.Teacher;
 using SchoolSystem.IntegrationTests.Common;
 using SchoolSystem.IntegrationTests.Common.TestData;
 using SchoolSystem.Core.Student;
+using SchoolSystem.IntegrationTests.Common.TestScenarios;
 
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;
 
-
-public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabaseFixture>
+[Collection("RepositoryIntegrationTest")]
+public class CourseRepositoryIntegrationTest
 {
-    private ContainerizedDatabaseFixture _fixture;
-    private ITestOutputHelper _output;
-    private CourseRepository _courseRepository;
-    private StudentRepository _studentRepository;
-    private TeacherRepository _teacherRepository;
+    private readonly ContainerizedDatabaseFixture _fixture;
+    private readonly CourseRepository _courseRepository;
+    private readonly StudentRepository _studentRepository;
+    private readonly TeacherRepository _teacherRepository;
 
-    public CourseRepositoryIntegrationTest(ContainerizedDatabaseFixture fixture, ITestOutputHelper output)
+    public CourseRepositoryIntegrationTest(ContainerizedDatabaseFixture fixture)
     {
         _fixture = fixture;
-        _output = output;
 
         _courseRepository = new CourseRepository(fixture.Context);
         _studentRepository = new StudentRepository(fixture.Context);
@@ -44,7 +42,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_PreSeeded_Data_Be_Available()
     {
-        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseTestScenarios.SingleCourse);
 
         CourseModel? courseOnDatabase = (await _courseRepository.GetAll()).FirstOrDefault();
         StudentModel? studentOnDatabase = (await _studentRepository.GetAll()).FirstOrDefault();
@@ -63,7 +61,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Add_Entities_To_Repository()
     {
-        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseTestScenarios.Empty);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_1);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_1; 
@@ -77,7 +75,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Zero_On_Empty_Repository()
     {
-        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.Empty);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseTestScenarios.Empty);
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
@@ -87,12 +85,12 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Increment_On_Create_Entity()
     {
-        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseTestScenarios.SingleCourse);
 
         TeacherModel createdTeacher = await _teacherRepository.Create(TeacherTestData.TEACHER_MODEL_2);
         CourseModel sampleCourse = CourseTestData.COURSE_MODEL_2;
         sampleCourse.Teacher = createdTeacher;
-        var _ = await _courseRepository.Create(sampleCourse);
+        await _courseRepository.Create(sampleCourse);
 
         int courseEntitiesCount = (await _courseRepository.GetAll()).Count();
 
@@ -102,7 +100,7 @@ public class CourseRepositoryIntegrationTest: IClassFixture<ContainerizedDatabas
     [Fact]
     public async Task Should_Count_Decrement_On_Delete_Entity()
     {
-        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseRepositoryScenarios.SingleCourse);
+        using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, CourseTestScenarios.SingleCourse);
 
         CourseModel? courseOnDatabase = (await _courseRepository.GetAll()).FirstOrDefault();
         if (courseOnDatabase != null)

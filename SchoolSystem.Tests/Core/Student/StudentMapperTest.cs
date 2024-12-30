@@ -15,8 +15,8 @@ namespace SchoolSystem.Tests.Core.Student;
 
 public class StudentMapperTest
 {
-    private IBaseMapper<StudentModel, StudentDto> _studentDtoMapper;
-    private IBaseMapper<StudentDto, StudentModel> _studentModelMapper;
+    private readonly IBaseMapper<StudentModel, StudentDto> _studentDtoMapper;
+    private readonly IBaseMapper<StudentDto, StudentModel> _studentModelMapper;
 
     public StudentMapperTest()
     {

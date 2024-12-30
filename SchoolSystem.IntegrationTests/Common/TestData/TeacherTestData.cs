@@ -3,19 +3,19 @@
 
 namespace SchoolSystem.IntegrationTests.Common.TestData;
 
-public class TeacherTestData
+public static class TeacherTestData
 {
     public static TeacherModel TEACHER_MODEL_1 => new()
     {
         FullName = "Sample Teacher",
-        Position = "Assistant",
+        Position = AcademicPosition.AssistantProfessor,
         Email = "sample.assistant.teacher@uni.ts"
     };
 
     public static TeacherModel TEACHER_MODEL_2 => new()
     {
         FullName = "Sample Teacher",
-        Position = "Associated",
+        Position = AcademicPosition.AssociateProfessor,
         Email = "sample.associated.teacher@uni.ts"
     };
 }
