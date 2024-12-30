@@ -82,6 +82,10 @@ public class StudentService(
 
             return studentDtoMapper.MapInstance(await studentRepository.Create(model));
         }
+        catch (EmailAlreadyExistsDomainException)
+        {
+            throw new ConflictRestException("This Student is trying to use an email already in use");
+        }
         catch (EntityAlreadyExistsDomainException)
         {
             throw new ConflictRestException("Creating this Student violates an unique constraint");
@@ -108,6 +112,10 @@ public class StudentService(
             existingStudent.UpdateDate = DateTime.Now;
 
             await studentRepository.Update(existingStudent);
+        }
+        catch (EmailAlreadyExistsDomainException)
+        {
+            throw new ConflictRestException("This Student is trying to use an email already in use");
         }
         catch (EntityNotFoundDomainException e)
         {

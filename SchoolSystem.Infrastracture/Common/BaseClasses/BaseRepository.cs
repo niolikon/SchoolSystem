@@ -87,7 +87,7 @@ public abstract class BaseRepository<TModel, Tid> : IBaseRepository<TModel, Tid>
         }
     }
 
-    public async Task<TModel> Create(TModel model)
+    virtual public async Task<TModel> Create(TModel model)
     {
         try
         {

@@ -82,6 +82,10 @@ public class TeacherService(
 
             return teacherDtoMapper.MapInstance(await teacherRepository.Create(model));
         }
+        catch (EmailAlreadyExistsDomainException)
+        {
+            throw new ConflictRestException("This Teacher is trying to use an email already in use");
+        }
         catch (EntityAlreadyExistsDomainException)
         {
             throw new ConflictRestException("Creating this Teacher violates an unique constraint");
@@ -109,6 +113,10 @@ public class TeacherService(
             existingTeacher.UpdateDate = DateTime.Now;
 
             await teacherRepository.Update(existingTeacher);
+        }
+        catch (EmailAlreadyExistsDomainException)
+        {
+            throw new ConflictRestException("This Teacher is trying to use an email already in use");
         }
         catch (EntityNotFoundDomainException e)
         {

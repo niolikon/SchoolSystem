@@ -2,6 +2,7 @@
 using SchoolSystem.Infrastracture.Common;
 using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
+using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Exceptions.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,27 @@ public class StudentRepository : BaseRepository<StudentModel, int>, IStudentRepo
 {
     public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
+    }
+
+    public async Task<bool> IsEmailInUse(string email)
+    {
+        IQueryable<StudentModel> students = _dbContext.Set<StudentModel>();
+        IQueryable<TeacherModel> teachers = _dbContext.Set<TeacherModel>();
+
+        return await Task.FromResult(
+            students.Any(s => s.Email.Equals(email)) ||
+            teachers.Any(t => t.Email.Equals(email))
+        );
+    }
+
+    override public async Task<StudentModel> Create(StudentModel model)
+    {
+        if (await IsEmailInUse(model.Email))
+        {
+            throw new EmailAlreadyExistsDomainException($"Email {model.Email} already in use");
+        }
+
+        return await base.Create(model);
     }
 
     public async Task<IEnumerable<StudentModel>> FindStudentsByCourseId(int courseId)
