@@ -18,7 +18,6 @@ public class TeacherDetailsDto
     [Required, DataType(DataType.EmailAddress), StringLength(maximumLength: 100, MinimumLength = 5)]
     public required string Email { get; set; }
 
-    [SwaggerSchema(ReadOnly = true)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<CourseDetailsDto>? Courses { get; set; }
 }
