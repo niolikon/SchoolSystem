@@ -3,8 +3,6 @@ using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Student;
 using System.ComponentModel.DataAnnotations;
 
-
-
 namespace SchoolSystem.Core.Course;
 
 public class CourseModel : BaseModel<int>

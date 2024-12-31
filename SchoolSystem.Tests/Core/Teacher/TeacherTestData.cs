@@ -1,15 +1,16 @@
 ﻿using SchoolSystem.Core.Teacher;
-
+using SchoolSystem.Tests.Core.Course;
 
 namespace SchoolSystem.Tests.Core.Teacher;
 
-public record TeacherTestData
+public static class TeacherTestData
 {
+    #region TeacherModel
     public static TeacherModel TEACHER_MODEL_1_ASSISTANT => new()
     {
         Id = 1,
         FullName = "Sample Teacher",
-        Position = "Assistant",
+        Position = AcademicPosition.AssistantProfessor,
         Email = "sample.assistant.teacher@uni.ts"
     };
 
@@ -17,7 +18,7 @@ public record TeacherTestData
     {
         Id = 2,
         FullName = "Sample Teacher",
-        Position = "Associated",
+        Position = AcademicPosition.AssociateProfessor,
         Email = "sample.associated.teacher@uni.ts"
     };
 
@@ -26,32 +27,71 @@ public record TeacherTestData
         [TEACHER_MODEL_1_ASSISTANT],
         [TEACHER_MODEL_2_ASSOCIATED]
     ];
+    #endregion
 
-    public static TeacherDto TEACHER_DTO_1_ASSISTANT => new()
+    #region TeacherDetails
+    public static TeacherDetailsDto TEACHER_DETAILS_1_ASSISTANT => new()
     {
         Id = 1,
         FullName = "Sample Teacher",
-        Position = "Assistant",
-        Email = "sample.assistant.teacher@uni.ts"
+        Position = AcademicPosition.AssistantProfessor.ToString(),
+        Email = "sample.assistant.teacher@uni.ts",
+        Courses = [CourseTestData.COURSE_DETAILS_1_CALCULUS, CourseTestData.COURSE_DETAILS_3_STATISTICS]
     };
 
-    public static TeacherDto TEACHER_DTO_2_ASSOCIATED => new()
+    public static TeacherDetailsDto TEACHER_DETAILS_2_ASSOCIATED => new()
     {
         Id = 2,
         FullName = "Sample Teacher",
-        Position = "Associated",
+        Position = AcademicPosition.AssociateProfessor.ToString(),
+        Email = "sample.associated.teacher@uni.ts",
+        Courses = [CourseTestData.COURSE_DETAILS_2_ALGEBRA]
+    };
+    #endregion
+
+    #region TeacherCreateDto
+    public static TeacherCreateDto TEACHER_CREATE_DTO_1_ASSISTANT => new()
+    {
+        FullName = "Sample Teacher",
+        Position = AcademicPosition.AssistantProfessor.ToString(),
+        Email = "sample.assistant.teacher@uni.ts"
+    };
+
+    public static TeacherCreateDto TEACHER_CREATE_DTO_2_ASSOCIATED => new()
+    {
+        FullName = "Sample Teacher",
+        Position = AcademicPosition.AssociateProfessor.ToString(),
         Email = "sample.associated.teacher@uni.ts"
     };
 
-    public static readonly IEnumerable<object[]> TeacherDtoTestCases =
+    public static readonly IEnumerable<object[]> TeacherCreateDtoTestCases =
     [
-        [TEACHER_DTO_1_ASSISTANT],
-        [TEACHER_DTO_2_ASSOCIATED]
+        [TEACHER_CREATE_DTO_1_ASSISTANT],
+        [TEACHER_CREATE_DTO_2_ASSOCIATED]
     ];
+    #endregion
 
-    public static readonly IEnumerable<object[]> TeacherModelAndRelatedDtoTestCases =
+    #region TeacherUpdateDto
+    public static TeacherUpdateDto TEACHER_UPDATE_DTO_1_ASSISTANT => new()
+    {
+        Id = 1,
+        FullName = "Sample Teacher",
+        Position = AcademicPosition.AssistantProfessor.ToString(),
+        Email = "sample.assistant.teacher@uni.ts"
+    };
+
+    public static TeacherUpdateDto TEACHER_UPDATE_DTO_2_ASSOCIATED => new()
+    {
+        Id = 2,
+        FullName = "Sample Teacher",
+        Position = AcademicPosition.AssociateProfessor.ToString(),
+        Email = "sample.associated.teacher@uni.ts"
+    };
+
+    public static readonly IEnumerable<object[]> TeacherUpdateDtoTestCases =
     [
-        [TEACHER_MODEL_1_ASSISTANT, TEACHER_DTO_1_ASSISTANT],
-        [TEACHER_MODEL_2_ASSOCIATED, TEACHER_DTO_2_ASSOCIATED]
+        [TEACHER_UPDATE_DTO_1_ASSISTANT],
+        [TEACHER_UPDATE_DTO_2_ASSOCIATED]
     ];
+    #endregion
 }

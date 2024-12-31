@@ -1,11 +1,11 @@
 ﻿using SchoolSystem.Core.Course;
 using SchoolSystem.Tests.Core.Teacher;
 
-
 namespace SchoolSystem.Tests.Core.Course;
 
-public record CourseTestData
+public static class CourseTestData
 {
+    #region CourseModel
     public static CourseModel COURSE_MODEL_1_CALCULUS => new()
     {
         Id = 1,
@@ -36,42 +36,95 @@ public record CourseTestData
         [COURSE_MODEL_2_ALGEBRA],
         [COURSE_MODEL_3_STATISTICS]
     ];
+    #endregion
 
-    public static CourseDto COURSE_DTO_1_CALCULUS => new()
+
+    #region CourseDetails
+    public static CourseDetailsDto COURSE_DETAILS_1_CALCULUS => new()
     {
         Id = 1,
         Name = "Calculus",
         Credits = 10,
-        TeacherId = TeacherTestData.TEACHER_DTO_1_ASSISTANT.Id
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
     };
 
-    public static CourseDto COURSE_DTO_2_ALGEBRA => new()
+    public static CourseDetailsDto COURSE_DETAILS_2_ALGEBRA => new()
     {
         Id = 2,
         Name = "Linear Algebra",
         Credits = 6,
-        TeacherId = TeacherTestData.TEACHER_DTO_2_ASSOCIATED.Id
+        TeacherId = TeacherTestData.TEACHER_MODEL_2_ASSOCIATED.Id
     };
 
-    public static CourseDto COURSE_DTO_3_STATISTICS => new()
+    public static CourseDetailsDto COURSE_DETAILS_3_STATISTICS => new()
     {
         Id = 3,
         Name = "Probability and Statistics",
         Credits = 6,
-        TeacherId = TeacherTestData.TEACHER_DTO_1_ASSISTANT.Id
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
+    };
+    #endregion
+
+    #region CourseCreateDto
+    public static CourseCreateDto COURSE_CREATE_DTO_1_CALCULUS => new()
+    {
+        Name = "Calculus",
+        Credits = 10,
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
     };
 
-    public static readonly IEnumerable<object[]> CourseDtoTestCases =
-    [
-        [COURSE_DTO_1_CALCULUS],
-        [COURSE_DTO_2_ALGEBRA],
-        [COURSE_DTO_3_STATISTICS],
-    ];
+    public static CourseCreateDto COURSE_CREATE_DTO_2_ALGEBRA => new()
+    {
+        Name = "Linear Algebra",
+        Credits = 6,
+        TeacherId = TeacherTestData.TEACHER_MODEL_2_ASSOCIATED.Id
+    };
 
-    public static readonly IEnumerable<object[]> CourseModelAndRelatedDtoTestCases =
+    public static CourseCreateDto COURSE_CREATE_DTO_3_STATISTICS => new()
+    {
+        Name = "Probability and Statistics",
+        Credits = 6,
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
+    };
+
+    public static readonly IEnumerable<object[]> CourseCreateDtoTestCases =
     [
-        [COURSE_MODEL_1_CALCULUS, COURSE_DTO_1_CALCULUS],
-        [COURSE_MODEL_2_ALGEBRA, COURSE_DTO_2_ALGEBRA],
-        [COURSE_MODEL_3_STATISTICS, COURSE_DTO_3_STATISTICS],
+        [COURSE_CREATE_DTO_1_CALCULUS],
+        [COURSE_CREATE_DTO_2_ALGEBRA],
+        [COURSE_CREATE_DTO_3_STATISTICS],
     ];
+    #endregion
+
+    #region CourseUpdateDto
+    public static CourseUpdateDto COURSE_UPDATE_DTO_1_CALCULUS => new()
+    {
+        Id = 1,
+        Name = "Calculus",
+        Credits = 10,
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
+    };
+
+    public static CourseUpdateDto COURSE_UPDATE_DTO_2_ALGEBRA => new()
+    {
+        Id = 2,
+        Name = "Linear Algebra",
+        Credits = 6,
+        TeacherId = TeacherTestData.TEACHER_MODEL_2_ASSOCIATED.Id
+    };
+
+    public static CourseUpdateDto COURSE_UPDATE_DTO_3_STATISTICS => new()
+    {
+        Id = 3,
+        Name = "Probability and Statistics",
+        Credits = 6,
+        TeacherId = TeacherTestData.TEACHER_MODEL_1_ASSISTANT.Id
+    };
+
+    public static readonly IEnumerable<object[]> CourseUpdateDtoTestCases =
+    [
+        [COURSE_UPDATE_DTO_1_CALCULUS],
+        [COURSE_UPDATE_DTO_2_ALGEBRA],
+        [COURSE_UPDATE_DTO_3_STATISTICS],
+    ];
+    #endregion
 }

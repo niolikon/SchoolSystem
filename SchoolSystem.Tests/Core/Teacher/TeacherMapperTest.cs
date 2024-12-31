@@ -12,14 +12,16 @@ namespace SchoolSystem.Tests.Core.Teacher;
 
 public class TeacherMapperTest
 {
-    private IBaseMapper<TeacherModel, TeacherDto> _courseDtoMapper;
-    private IBaseMapper<TeacherDto, TeacherModel> _courseModelMapper;
+    private readonly IBaseMapper<TeacherModel, TeacherDetailsDto> _teacherDtoMapper;
+    private readonly IBaseMapper<TeacherCreateDto, TeacherModel> _teacherCreateToModelMapper;
+    private readonly IBaseMapper<TeacherUpdateDto, TeacherModel> _teacherUpdateToModelMapper;
 
     public TeacherMapperTest()
     {
         IMapper _mapper = MapperConfigurationFactory.CreateMapper();
-        _courseDtoMapper = new BaseMapper<TeacherModel, TeacherDto>(_mapper);
-        _courseModelMapper = new BaseMapper<TeacherDto, TeacherModel>(_mapper);
+        _teacherDtoMapper = new BaseMapper<TeacherModel, TeacherDetailsDto>(_mapper);
+        _teacherCreateToModelMapper = new BaseMapper<TeacherCreateDto, TeacherModel>(_mapper);
+        _teacherUpdateToModelMapper = new BaseMapper<TeacherUpdateDto, TeacherModel>(_mapper);
     }
 
     [Theory]
@@ -33,7 +35,7 @@ public class TeacherMapperTest
         });
         model.Courses = courses;
 
-        var dto = _courseDtoMapper.MapInstance(model);
+        var dto = _teacherDtoMapper.MapInstance(model);
 
         dto.Id.Should().Be(model.Id);
         dto.FullName.Should().Be(model.FullName);
@@ -42,10 +44,20 @@ public class TeacherMapperTest
     }
 
     [Theory]
-    [MemberData(nameof(TeacherTestData.TeacherDtoTestCases), MemberType = typeof(TeacherTestData))]
-    public void Should_Map_Dto_To_Model(TeacherDto dto)
+    [MemberData(nameof(TeacherTestData.TeacherCreateDtoTestCases), MemberType = typeof(TeacherTestData))]
+    public void Should_Map_Create_Dto_To_Model(TeacherCreateDto dto)
     {
-        var model = _courseModelMapper.MapInstance(dto);
+        var model = _teacherCreateToModelMapper.MapInstance(dto);
+
+        model.FullName.Should().Be(dto.FullName);
+        model.Email.Should().Be(dto.Email);
+    }
+
+    [Theory]
+    [MemberData(nameof(TeacherTestData.TeacherUpdateDtoTestCases), MemberType = typeof(TeacherTestData))]
+    public void Should_Map_Update_Dto_To_Model(TeacherUpdateDto dto)
+    {
+        var model = _teacherUpdateToModelMapper.MapInstance(dto);
 
         model.Id.Should().Be(dto.Id);
         model.FullName.Should().Be(dto.FullName);

@@ -48,7 +48,7 @@ public class StudentsController : ControllerBase
 
     // POST api/<StudentController>
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] StudentDto student)
+    public async Task<IActionResult> Post([FromBody] StudentCreateDto student)
     {
         if (!ModelState.IsValid)
         {
@@ -65,7 +65,7 @@ public class StudentsController : ControllerBase
 
     // PUT api/<StudentController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] StudentDto student)
+    public async Task<IActionResult> Put(int id, [FromBody] StudentUpdateDto student)
     {
         if (!ModelState.IsValid)
         {

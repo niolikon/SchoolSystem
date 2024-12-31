@@ -1,17 +1,38 @@
-﻿using SchoolSystem.Infrastracture.Common.BaseClasses;
-using SchoolSystem.Infrastracture.Common;
-using SchoolSystem.Core.Course;
+﻿using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
+using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Exceptions.Domain;
+using SchoolSystem.Infrastracture.Common.BaseClasses;
+using SchoolSystem.Infrastracture.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Student;
-
 
 public class StudentRepository : BaseRepository<StudentModel, int>, IStudentRepository
 {
     public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
+    }
+
+    public async Task<bool> IsEmailInUse(string email)
+    {
+        IQueryable<StudentModel> students = _dbContext.Set<StudentModel>();
+        IQueryable<TeacherModel> teachers = _dbContext.Set<TeacherModel>();
+
+        return await Task.FromResult(
+            students.Any(s => s.Email.Equals(email)) ||
+            teachers.Any(t => t.Email.Equals(email))
+        );
+    }
+
+    override public async Task<StudentModel> Create(StudentModel model)
+    {
+        if (await IsEmailInUse(model.Email))
+        {
+            throw new EmailAlreadyExistsDomainException($"Email {model.Email} already in use");
+        }
+
+        return await base.Create(model);
     }
 
     public async Task<IEnumerable<StudentModel>> FindStudentsByCourseId(int courseId)
@@ -91,7 +112,7 @@ public class StudentRepository : BaseRepository<StudentModel, int>, IStudentRepo
             return await query.FirstOrDefaultAsync() ??
                 throw new EntityNotFoundDomainException(typeof(StudentModel).ToString(), id);
         }
-        catch (EntityNotFoundDomainException ex)
+        catch (EntityNotFoundDomainException)
         {
             throw;
         }

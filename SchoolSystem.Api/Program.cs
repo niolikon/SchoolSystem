@@ -42,9 +42,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseMiddleware<ControllerAdviceMiddleware>();
-
 app.UseRouting();
+
+app.UseMiddleware<ControllerAdviceMiddleware>();
 
 app.MapControllers();
 

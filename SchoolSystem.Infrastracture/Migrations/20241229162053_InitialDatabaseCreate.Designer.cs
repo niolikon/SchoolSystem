@@ -12,8 +12,8 @@ using SchoolSystem.Infrastracture.Common;
 namespace SchoolSystem.Infrastracture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241210095543_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241229162053_InitialDatabaseCreate")]
+    partial class InitialDatabaseCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace SchoolSystem.Infrastracture.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CoursesEnrolledStudents", b =>
+                {
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoursesId", "StudentsId");
+
+                    b.HasIndex("StudentsId");
+
+                    b.ToTable("CoursesEnrolledStudents");
+                });
 
             modelBuilder.Entity("SchoolSystem.Core.Course.CourseModel", b =>
                 {
@@ -44,7 +59,7 @@ namespace SchoolSystem.Infrastracture.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<int>("TeacherId")
+                    b.Property<int?>("TeacherId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -54,34 +69,7 @@ namespace SchoolSystem.Infrastracture.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("SchoolSystem.Core.CourseEnrollment.CourseEnrollmentModel", b =>
-                {
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EntryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("StudentId", "CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("CourseEnrollments");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("SchoolSystem.Core.Student.StudentModel", b =>
@@ -110,7 +98,7 @@ namespace SchoolSystem.Infrastracture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("SchoolSystem.Core.Teacher.TeacherModel", b =>
@@ -134,57 +122,40 @@ namespace SchoolSystem.Infrastracture.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
+                    b.Property<int>("Position")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
+                });
+
+            modelBuilder.Entity("CoursesEnrolledStudents", b =>
+                {
+                    b.HasOne("SchoolSystem.Core.Course.CourseModel", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolSystem.Core.Student.StudentModel", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SchoolSystem.Core.Course.CourseModel", b =>
                 {
                     b.HasOne("SchoolSystem.Core.Teacher.TeacherModel", "Teacher")
                         .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("SchoolSystem.Core.CourseEnrollment.CourseEnrollmentModel", b =>
-                {
-                    b.HasOne("SchoolSystem.Core.Course.CourseModel", "Course")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SchoolSystem.Core.Student.StudentModel", "Student")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("SchoolSystem.Core.Course.CourseModel", b =>
-                {
-                    b.Navigation("Enrollments");
-                });
-
-            modelBuilder.Entity("SchoolSystem.Core.Student.StudentModel", b =>
-                {
-                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SchoolSystem.Core.Teacher.TeacherModel", b =>

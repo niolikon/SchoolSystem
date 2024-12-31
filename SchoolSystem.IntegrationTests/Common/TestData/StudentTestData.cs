@@ -3,7 +3,7 @@
 
 namespace SchoolSystem.IntegrationTests.Common.TestData;
 
-public record StudentTestData
+public static class StudentTestData
 {
     public static StudentModel STUDENT_MODEL_1 => new()
     {

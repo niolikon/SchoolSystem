@@ -1,36 +1,30 @@
 ﻿using FluentAssertions;
 using Moq;
-using SchoolSystem.Core.Common.BaseInterfaces;
-using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
-using SchoolSystem.Tests.Core.Course;
+using SchoolSystem.Core.Common.BaseInterfaces;
 
 namespace SchoolSystem.Tests.Core.Student;
 
-
 public class StudentServiceTests
 {
-    private Mock<IBaseMapper<StudentModel, StudentDto>> _studentDtoMapperMock;
-    private Mock<IBaseMapper<StudentDto, StudentModel>> _studentModelMapperMock;
-    private Mock<IStudentRepository> _studentRepositoryMock;
-    private Mock<IBaseMapper<CourseModel, CourseDto>> _courseDtoMapperMock;
-    private Mock<ICourseRepository> _courseRepositoryMock;
-    private StudentService studentService;
+    private readonly Mock<IBaseMapper<StudentModel, StudentDetailsDto>> _studentDtoMapperMock;
+    private readonly Mock<IBaseMapper<StudentCreateDto, StudentModel>> _studentCreateToModelMapperMock;
+    private readonly Mock<IBaseMapper<StudentUpdateDto, StudentModel>> _studentUpdateToModelMapperMock;
+    private readonly Mock<IStudentRepository> _studentRepositoryMock;
+    private readonly StudentService _studentService;
 
     public StudentServiceTests()
     {
-        _studentDtoMapperMock = new Mock<IBaseMapper<StudentModel, StudentDto>>();
-        _studentModelMapperMock = new Mock<IBaseMapper<StudentDto, StudentModel>>();
+        _studentDtoMapperMock = new Mock<IBaseMapper<StudentModel, StudentDetailsDto>>();
+        _studentCreateToModelMapperMock = new Mock<IBaseMapper<StudentCreateDto, StudentModel>>();
+        _studentUpdateToModelMapperMock = new Mock<IBaseMapper<StudentUpdateDto, StudentModel>>();
         _studentRepositoryMock = new Mock<IStudentRepository>();
-        _courseDtoMapperMock = new Mock<IBaseMapper<CourseModel, CourseDto>>();
-        _courseRepositoryMock = new Mock<ICourseRepository>();
 
-        studentService = new StudentService(
+        _studentService = new StudentService(
             _studentDtoMapperMock.Object,
-            _studentModelMapperMock.Object,
-            _studentRepositoryMock.Object,
-            _courseDtoMapperMock.Object,
-            _courseRepositoryMock.Object);
+            _studentCreateToModelMapperMock.Object,
+            _studentUpdateToModelMapperMock.Object,
+            _studentRepositoryMock.Object);
     }
 
     [Fact]
@@ -41,10 +35,10 @@ public class StudentServiceTests
                 StudentTestData.STUDENT_MODEL_1,
                 StudentTestData.STUDENT_MODEL_2
         };
-        List<StudentDto> studentsAsDto = new List<StudentDto>
+        List<StudentDetailsDto> studentsAsDto = new List<StudentDetailsDto>
         {
-            StudentTestData.STUDENT_DTO_1,
-            StudentTestData.STUDENT_DTO_2
+            StudentTestData.STUDENT_DETAILS_DTO_1,
+            StudentTestData.STUDENT_DETAILS_DTO_2
         };
 
         _studentRepositoryMock.Setup(repo => repo.GetAllWithDetails())
@@ -53,63 +47,32 @@ public class StudentServiceTests
         _studentDtoMapperMock.Setup(mapper => mapper.MapList(studentsInDb))
             .Returns(studentsAsDto);
 
-        IEnumerable<StudentDto> studentsReturned = await studentService.GetAll();
+        IEnumerable<StudentDetailsDto> studentsReturned = await _studentService.GetAll();
 
         studentsReturned.Should().BeEquivalentTo(studentsAsDto);
     }
 
-    /*
-    [Fact]
-    public async Task Should_Return_Correct_Data_On_GetSingle()
-    {
-        var studentModel = StudentTestData.STUDENT_MODEL_2;
-        var studentAsDto = StudentTestData.STUDENT_DTO_2;
-        var coursesEnrolledModel = new List<CourseModel>
-        {
-            CourseTestData.COURSE_MODEL_2_ALGEBRA,
-            CourseTestData.COURSE_MODEL_3_STATISTICS
-        };
-        var coursesEnrolledAsDto = new List<CourseDto>
-        {
-            CourseTestData.COURSE_DTO_2_ALGEBRA,
-            CourseTestData.COURSE_DTO_3_STATISTICS
-        };
-
-        _studentRepositoryMock
-            .Setup(repo => repo.GetById(studentModel.Id))
-            .ReturnsAsync(studentModel);
-
-        _studentDtoMapperMock
-            .Setup(mapper => mapper.MapInstance(studentModel))
-            .Returns(studentAsDto);
-
-        _courseRepositoryMock
-            .Setup(repo => repo.FindCoursesByStudentId(studentModel.Id))
-            .ReturnsAsync(coursesEnrolledModel);
-
-        _courseDtoMapperMock
-            .Setup(mapper => mapper.MapList(coursesEnrolledModel))
-            .Returns(coursesEnrolledAsDto);
-
-        StudentDto studentReturned = await studentService.GetSingle(studentModel.Id);
-
-        studentReturned.Should().Be(studentAsDto);
-        studentReturned.Courses.Should().BeEquivalentTo(coursesEnrolledAsDto);
-    }*/
-
     [Fact]
     public async Task Should_Return_Created_Data_On_Create()
     {
-        var studentDto = StudentTestData.STUDENT_DTO_2;
-        var studentAsModel = StudentTestData.STUDENT_MODEL_2;
-        StudentDto studentDtoCreated = new()
+        StudentCreateDto studentDto = new() 
+        { 
+            Email = "test@test.it", 
+            FullName = "Robben Ford" 
+        };
+        StudentModel studentAsModel = new() 
+        { 
+            Email = studentDto.Email, 
+            FullName = studentDto.FullName 
+        };
+        StudentDetailsDto studentDtoResulting = new()
         {
             Id = 2345678,
-            FullName = studentDto.FullName,
             Email = studentDto.Email,
+            FullName = studentDto.FullName,
         };
 
-        _studentModelMapperMock
+        _studentCreateToModelMapperMock
             .Setup(mapper => mapper.MapInstance(studentDto))
             .Returns(studentAsModel);
 
@@ -119,11 +82,11 @@ public class StudentServiceTests
 
         _studentDtoMapperMock
             .Setup(mapper => mapper.MapInstance(studentAsModel))
-            .Returns(studentDtoCreated);
+            .Returns(studentDtoResulting);
 
-        StudentDto studentReturned = await studentService.Create(studentDto);
+        StudentDetailsDto studentReturned = await _studentService.Create(studentDto);
 
-        studentReturned.FullName.Should().Be(studentDtoCreated.FullName);
-        studentReturned.Email.Should().Be(studentDtoCreated.Email);
+        studentReturned.FullName.Should().Be(studentDto.FullName);
+        studentReturned.Email.Should().Be(studentDto.Email);
     }
 }
