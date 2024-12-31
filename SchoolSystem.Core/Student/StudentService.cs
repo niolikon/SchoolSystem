@@ -1,20 +1,17 @@
 ﻿using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common;
-using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Exceptions.Api;
 using SchoolSystem.Core.Exceptions.Domain;
-
 
 namespace SchoolSystem.Core.Student;
 
 public class StudentService(
-    IBaseMapper<StudentModel, StudentDto> studentDtoMapper,
-    IBaseMapper<StudentDto, StudentModel> studentModelMapper,
-    IStudentRepository studentRepository,
-    IBaseMapper<CourseModel, CourseDto> courseDtoMapper,
-    ICourseRepository courseRepository) : IStudentService
+    IBaseMapper<StudentModel, StudentDetailsDto> studentDtoMapper,
+    IBaseMapper<StudentCreateDto, StudentModel> studentCreateToModelMapper,
+    IBaseMapper<StudentUpdateDto, StudentModel> studentUpdateToModelMapper,
+    IStudentRepository studentRepository) : IStudentService
 {
-    public async Task<IEnumerable<StudentDto>> GetAll()
+    public async Task<IEnumerable<StudentDetailsDto>> GetAll()
     {
         try
         {
@@ -30,14 +27,14 @@ public class StudentService(
         }
     }
 
-    public async Task<PaginatedData<StudentDto>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<PaginatedData<StudentDetailsDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
         try
         {
             PaginatedData<StudentModel> paginatedStudents = await studentRepository.GetPaginatedData(pageNumber, pageSize);
-            List<StudentDto> students = studentDtoMapper.MapList(paginatedStudents.Data).ToList();
+            List<StudentDetailsDto> students = studentDtoMapper.MapList(paginatedStudents.Data).ToList();
 
-            return new PaginatedData<StudentDto>(students, paginatedStudents.TotalCount);
+            return new PaginatedData<StudentDetailsDto>(students, paginatedStudents.TotalCount);
         }
         catch (InvalidQueryDomainException)
         {
@@ -53,17 +50,17 @@ public class StudentService(
         }
     }
 
-    public async Task<StudentDto> GetSingle(int id)
+    public async Task<StudentDetailsDto> GetSingle(int id)
     {
         try
         {
             return studentDtoMapper.MapInstance(await studentRepository.GetByIdWithDetails(id));
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Student with id {id}");
         }
-        catch (DatabaseOperationDomainException e)
+        catch (DatabaseOperationDomainException)
         {
             throw new InternalServerErrorRestException($"An error prevents to retrieve Student with id {id}");
         }
@@ -73,11 +70,11 @@ public class StudentService(
         }
     }
 
-    public async Task<StudentDto> Create(StudentDto dto)
+    public async Task<StudentDetailsDto> Create(StudentCreateDto dto)
     {
         try
         {
-            StudentModel model = studentModelMapper.MapInstance(dto);
+            StudentModel model = studentCreateToModelMapper.MapInstance(dto);
             model.EntryDate = DateTime.Now;
 
             return studentDtoMapper.MapInstance(await studentRepository.Create(model));
@@ -100,12 +97,12 @@ public class StudentService(
         }
     }
 
-    public async Task Update(int id, StudentDto updateInputDto)
+    public async Task Update(int id, StudentUpdateDto updateInputDto)
     {
         try
         {
             StudentModel existingStudent = await studentRepository.GetById(id);
-            StudentModel updateInputStudent = studentModelMapper.MapInstance(updateInputDto);
+            StudentModel updateInputStudent = studentUpdateToModelMapper.MapInstance(updateInputDto);
 
             existingStudent.FullName = updateInputStudent.FullName;
             existingStudent.Email = updateInputStudent.Email;
@@ -117,7 +114,7 @@ public class StudentService(
         {
             throw new ConflictRestException("This Student is trying to use an email already in use");
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Student with id {id}");
         }
@@ -138,7 +135,7 @@ public class StudentService(
             StudentModel student = await studentRepository.GetById(id);
             await studentRepository.Delete(student);
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Student with id {id}");
         }

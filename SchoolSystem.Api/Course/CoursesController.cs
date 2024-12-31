@@ -49,7 +49,7 @@ public class CoursesController : ControllerBase
 
     // POST api/<CourseController>
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CourseDto course)
+    public async Task<IActionResult> Post([FromBody] CourseCreateDto course)
     {
         if (!ModelState.IsValid)
         {
@@ -66,7 +66,7 @@ public class CoursesController : ControllerBase
 
     // PUT api/<CourseController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] CourseDto course)
+    public async Task<IActionResult> Put(int id, [FromBody] CourseUpdateDto course)
     {
         if (!ModelState.IsValid)
         {
@@ -89,14 +89,14 @@ public class CoursesController : ControllerBase
     [HttpGet("{id}/enrollments")]
     public async Task<IActionResult> GetAllEnrollments(int id)
     {
-        IEnumerable<StudentDto> students = await _courseService.ListStudentsEnrolledToCourse(id);
+        IEnumerable<StudentDetailsDto> students = await _courseService.ListStudentsEnrolledToCourse(id);
         return Ok(students);
 
     }
 
     // POST api/<CourseController>/5/enrollments
     [HttpPost("{id}/enrollments")]
-    public async Task<IActionResult> PostEnrollment(int id, [FromBody] StudentDto student)
+    public async Task<IActionResult> PostEnrollment(int id, [FromBody] StudentUpdateDto student)
     {
         if (!ModelState.IsValid)
         {

@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using Microsoft.Data.SqlClient;
 using SchoolSystem.Core.Course;
+using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Course;
 using SchoolSystem.Infrastracture.Student;
 using SchoolSystem.Infrastracture.Teacher;
 using SchoolSystem.IntegrationTests.Common;
 using SchoolSystem.IntegrationTests.Common.TestData;
-using SchoolSystem.Core.Student;
 using SchoolSystem.IntegrationTests.Common.TestScenarios;
 
 namespace SchoolSystem.IntegrationTests.Infrastructure.Course;

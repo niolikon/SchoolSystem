@@ -2,17 +2,17 @@
 
 namespace SchoolSystem.Core.Common.BaseInterfaces;
 
-public interface IBaseService<TDto> where TDto : class
+public interface IBaseService<TDetailsDto, TCreateDto, TUpdateDto> where TDetailsDto : class where TCreateDto : class where TUpdateDto : class
 {
-    Task<IEnumerable<TDto>> GetAll();
+    Task<IEnumerable<TDetailsDto>> GetAll();
 
-    Task<PaginatedData<TDto>> GetAllPaginated(int pageNumber, int pageSize);
+    Task<PaginatedData<TDetailsDto>> GetAllPaginated(int pageNumber, int pageSize);
 
-    Task<TDto> GetSingle(int id);
+    Task<TDetailsDto> GetSingle(int id);
 
-    Task<TDto> Create(TDto model);
+    Task<TDetailsDto> Create(TCreateDto model);
 
-    Task Update(int id, TDto model);
+    Task Update(int id, TUpdateDto model);
 
     Task Delete(int id);
 }

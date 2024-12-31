@@ -1,20 +1,17 @@
 ﻿using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common;
-using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Exceptions.Api;
 using SchoolSystem.Core.Exceptions.Domain;
-
 
 namespace SchoolSystem.Core.Teacher;
 
 public class TeacherService(
-    IBaseMapper<TeacherModel, TeacherDto> teacherDtoMapper,
-    IBaseMapper<TeacherDto, TeacherModel> teacherModelMapper,
-    ITeacherRepository teacherRepository,
-    IBaseMapper<CourseModel, CourseDto> courseDtoMapper,
-    ICourseRepository courseRepository) : ITeacherService
+    IBaseMapper<TeacherModel, TeacherDetailsDto> teacherDtoMapper,
+    IBaseMapper<TeacherCreateDto, TeacherModel> teacherCreateToModelMapper,
+    IBaseMapper<TeacherUpdateDto, TeacherModel> teacherUpdateToModelMapper,
+    ITeacherRepository teacherRepository) : ITeacherService
 {
-    public async Task<IEnumerable<TeacherDto>> GetAll()
+    public async Task<IEnumerable<TeacherDetailsDto>> GetAll()
     {
         try
         {
@@ -30,14 +27,14 @@ public class TeacherService(
         }
     }
 
-    public async Task<PaginatedData<TeacherDto>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<PaginatedData<TeacherDetailsDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
         try
         {
             PaginatedData<TeacherModel> paginatedTeachers = await teacherRepository.GetPaginatedData(pageNumber, pageSize);
-            List<TeacherDto> teachers = teacherDtoMapper.MapList(paginatedTeachers.Data).ToList();
+            List<TeacherDetailsDto> teachers = teacherDtoMapper.MapList(paginatedTeachers.Data).ToList();
 
-            return new PaginatedData<TeacherDto>(teachers, paginatedTeachers.TotalCount);
+            return new PaginatedData<TeacherDetailsDto>(teachers, paginatedTeachers.TotalCount);
         }
         catch (InvalidQueryDomainException)
         {
@@ -53,17 +50,17 @@ public class TeacherService(
         }
     }
 
-    public async Task<TeacherDto> GetSingle(int id)
+    public async Task<TeacherDetailsDto> GetSingle(int id)
     {
         try
         {
             return teacherDtoMapper.MapInstance(await teacherRepository.GetByIdWithDetails(id));
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Teacher with id {id}");
         }
-        catch (DatabaseOperationDomainException e)
+        catch (DatabaseOperationDomainException)
         {
             throw new InternalServerErrorRestException($"An error prevents to retrieve Teacher with id {id}");
         }
@@ -73,11 +70,11 @@ public class TeacherService(
         }
     }
 
-    public async Task<TeacherDto> Create(TeacherDto dto)
+    public async Task<TeacherDetailsDto> Create(TeacherCreateDto dto)
     {
         try
         {
-            TeacherModel model = teacherModelMapper.MapInstance(dto);
+            TeacherModel model = teacherCreateToModelMapper.MapInstance(dto);
             model.EntryDate = DateTime.Now;
 
             return teacherDtoMapper.MapInstance(await teacherRepository.Create(model));
@@ -100,12 +97,12 @@ public class TeacherService(
         }
     }
 
-    public async Task Update(int id, TeacherDto updateInputDto)
+    public async Task Update(int id, TeacherUpdateDto updateInputDto)
     {
         try
         {
             TeacherModel existingTeacher = await teacherRepository.GetById(id);
-            TeacherModel updateInputTeacher = teacherModelMapper.MapInstance(updateInputDto);
+            TeacherModel updateInputTeacher = teacherUpdateToModelMapper.MapInstance(updateInputDto);
 
             existingTeacher.FullName = updateInputTeacher.FullName;
             existingTeacher.Position = updateInputTeacher.Position;
@@ -118,7 +115,7 @@ public class TeacherService(
         {
             throw new ConflictRestException("This Teacher is trying to use an email already in use");
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Teacher with id {id}");
         }
@@ -139,7 +136,7 @@ public class TeacherService(
             TeacherModel teacher = await teacherRepository.GetById(id);
             await teacherRepository.Delete(teacher);
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Teacher with id {id}");
         }

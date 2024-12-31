@@ -1,9 +1,9 @@
 using System.Net;
-using SchoolSystem.IntegrationTests.Common;
 using System.Net.Http.Json;
 using FluentAssertions;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Infrastracture.Teacher;
+using SchoolSystem.IntegrationTests.Common;
 using SchoolSystem.IntegrationTests.Common.TestScenarios;
 
 namespace SchoolSystem.IntegrationTests.Api.Course;
@@ -26,7 +26,7 @@ public class TeacherControllerIntegrationTest
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, TeacherTestScenarios.Empty);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        IEnumerable<TeacherDto>? returnedTeachers = await client.GetFromJsonAsync<IEnumerable<TeacherDto>>("/api/Teachers");
+        IEnumerable<TeacherDetailsDto>? returnedTeachers = await client.GetFromJsonAsync<IEnumerable<TeacherDetailsDto>>("/api/Teachers");
 
         returnedTeachers.Should().NotBeNull();
         returnedTeachers.Should().BeEmpty();
@@ -38,7 +38,7 @@ public class TeacherControllerIntegrationTest
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, TeacherTestScenarios.SingleTeacher);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        IEnumerable<TeacherDto>? returnedTeachers = await client.GetFromJsonAsync<IEnumerable<TeacherDto>>("/api/Teachers");
+        IEnumerable<TeacherDetailsDto>? returnedTeachers = await client.GetFromJsonAsync<IEnumerable<TeacherDetailsDto>>("/api/Teachers");
 
         returnedTeachers.Should().NotBeNull();
         returnedTeachers.Should().NotBeEmpty();
@@ -50,12 +50,12 @@ public class TeacherControllerIntegrationTest
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, TeacherTestScenarios.Empty);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        TeacherDto teacherToAdd = new TeacherDto()
+        TeacherCreateDto teacherToAdd = new()
             { Email = "teacher@email.com", FullName = "Mario Rossi", Position = AcademicPosition.PostdoctoralFellow.ToString() };
         HttpResponseMessage teacherPostResponse = await client.PostAsJsonAsync("/api/Teachers", teacherToAdd);
         teacherPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         teacherPostResponse.Content.Should().NotBeNull();
-        TeacherDto? teacherCreated = await teacherPostResponse.Content.ReadFromJsonAsync<TeacherDto>();
+        TeacherDetailsDto? teacherCreated = await teacherPostResponse.Content.ReadFromJsonAsync<TeacherDetailsDto>();
         teacherCreated.Should().NotBeNull();
     }
 
@@ -65,8 +65,8 @@ public class TeacherControllerIntegrationTest
         using var seederCleaner = new DatabasePreSeederPostCleaner(_fixture.Context, TeacherTestScenarios.Empty);
 
         HttpClient client = new ContainerizedWebApplicationFactory<Program>(_fixture).CreateClient();
-        TeacherDto teacherToAdd = new TeacherDto()
-        { Email = "teacher@email.com", FullName = "Mario Rossi", Position = "NotValidPosition" };
+        TeacherCreateDto teacherToAdd = new()
+            { Email = "teacher@email.com", FullName = "Mario Rossi", Position = "NotValidPosition" };
         HttpResponseMessage teacherPostResponse = await client.PostAsJsonAsync("/api/Teachers", teacherToAdd);
         teacherPostResponse.StatusCode.Should().NotBe(HttpStatusCode.Created);
     }

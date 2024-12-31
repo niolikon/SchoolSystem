@@ -2,7 +2,6 @@
 using SchoolSystem.Core.Course;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace SchoolSystem.Core.Teacher;
 
 public enum AcademicPosition
