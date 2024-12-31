@@ -1,13 +1,12 @@
-﻿using SchoolSystem.Infrastracture.Common.BaseClasses;
-using SchoolSystem.Infrastracture.Common;
-using SchoolSystem.Core.Course;
+﻿using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Exceptions.Domain;
+using SchoolSystem.Infrastracture.Common.BaseClasses;
+using SchoolSystem.Infrastracture.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Course;
-
 
 public class CourseRepository : BaseRepository<CourseModel, int>, ICourseRepository
 {
@@ -66,7 +65,7 @@ public class CourseRepository : BaseRepository<CourseModel, int>, ICourseReposit
                 Id = c.Id,
                 Name = c.Name,
                 TeacherId = c.TeacherId,
-                Teacher = (c.TeacherId == null) ? null : new TeacherModel()
+                Teacher = (c.Teacher == null) ? null : new TeacherModel()
                 {
                     Id = c.Teacher.Id,
                     Email = c.Teacher.Email,
@@ -105,7 +104,7 @@ public class CourseRepository : BaseRepository<CourseModel, int>, ICourseReposit
                 Id = c.Id,
                 Name = c.Name,
                 TeacherId = c.TeacherId,
-                Teacher = (c.TeacherId == null) ? null : new TeacherModel()
+                Teacher = (c.Teacher == null) ? null : new TeacherModel()
                 {
                     Id = c.Teacher.Id,
                     Email = c.Teacher.Email,

@@ -12,8 +12,8 @@ public static class MapperConfigurationFactory
     {
         var configuration = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<CourseModel, CourseDto>()
-                .ForMember(dest => dest.Teacher, opt => opt.MapFrom(src => new TeacherDto
+            cfg.CreateMap<CourseModel, CourseDetailsDto>()
+                .ForMember(dest => dest.Teacher, opt => opt.MapFrom(src => new TeacherDetailsDto
                 {
                     Id = src.Teacher.Id,
                     FullName = src.Teacher.FullName,
@@ -21,35 +21,39 @@ public static class MapperConfigurationFactory
                     Email = src.Teacher.Email,
                     Courses = null
                 }))
-                .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students.Select(student => new StudentDto
+                .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students.Select(student => new StudentDetailsDto
                 {
                     Id = student.Id,
                     FullName = student.FullName,
                     Email = student.Email,
                     Courses = null
                 })));
-            cfg.CreateMap<CourseDto, CourseModel>();
+            cfg.CreateMap<CourseCreateDto, CourseModel>();
+            cfg.CreateMap<CourseUpdateDto, CourseModel>();
 
-            cfg.CreateMap<StudentModel, StudentDto>()
-                .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Courses.Select(course => new CourseDto
+            cfg.CreateMap<StudentModel, StudentDetailsDto>()
+                .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Courses.Select(course => new CourseDetailsDto
                 {
                     Id = course.Id,
                     Name = course.Name,
                     Credits = course.Credits,
                     TeacherId = course.TeacherId
                 })));
-            cfg.CreateMap<StudentDto, StudentModel>();
+            cfg.CreateMap<StudentCreateDto, StudentModel>();
+            cfg.CreateMap<StudentUpdateDto, StudentModel>();
 
-            cfg.CreateMap<TeacherModel, TeacherDto>()
+            cfg.CreateMap<TeacherModel, TeacherDetailsDto>()
                 .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position.ToString()))
-                .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Courses.Select(course => new CourseDto
+                .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Courses.Select(course => new CourseDetailsDto
                 {
                     Id = course.Id,
                     Name = course.Name,
                     Credits = course.Credits,
                     TeacherId = course.TeacherId
                 })));
-            cfg.CreateMap<TeacherDto, TeacherModel>()
+            cfg.CreateMap<TeacherCreateDto, TeacherModel>()
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => Enum.Parse<AcademicPosition>(src.Position, true)));
+            cfg.CreateMap<TeacherUpdateDto, TeacherModel>()
                 .ForMember(dest => dest.Position, opt => opt.MapFrom(src => Enum.Parse<AcademicPosition>(src.Position, true)));
         });
 

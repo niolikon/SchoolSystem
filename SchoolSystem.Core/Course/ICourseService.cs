@@ -1,14 +1,13 @@
 ﻿using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Student;
 
-
 namespace SchoolSystem.Core.Course;
 
-public interface ICourseService : IBaseService<CourseDto>
+public interface ICourseService : IBaseService<CourseDetailsDto, CourseCreateDto, CourseUpdateDto>
 {
-    Task<CourseDto> AddStudentEnrollmentToCourse(int courseId, StudentDto student);
+    Task<CourseDetailsDto> AddStudentEnrollmentToCourse(int courseId, StudentUpdateDto student);
 
-    Task<CourseDto> DeleteStudentEnrollmentToCourse(int courseId, int studentId);
+    Task<CourseDetailsDto> DeleteStudentEnrollmentToCourse(int courseId, int studentId);
 
-    Task<IEnumerable<StudentDto>> ListStudentsEnrolledToCourse(int courseId);
+    Task<IEnumerable<StudentDetailsDto>> ListStudentsEnrolledToCourse(int courseId);
 }

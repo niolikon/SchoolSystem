@@ -1,13 +1,12 @@
-﻿using SchoolSystem.Infrastracture.Common.BaseClasses;
-using SchoolSystem.Infrastracture.Common;
-using SchoolSystem.Core.Course;
+﻿using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Exceptions.Domain;
+using SchoolSystem.Infrastracture.Common.BaseClasses;
+using SchoolSystem.Infrastracture.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolSystem.Infrastracture.Teacher;
-
 
 public class TeacherRepository : BaseRepository<TeacherModel, int>, ITeacherRepository
 {
@@ -96,7 +95,7 @@ public class TeacherRepository : BaseRepository<TeacherModel, int>, ITeacherRepo
             return await query.FirstOrDefaultAsync() ??
                 throw new EntityNotFoundDomainException(typeof(TeacherModel).ToString(), id);
         }
-        catch (EntityNotFoundDomainException ex)
+        catch (EntityNotFoundDomainException)
         {
             throw;
         }

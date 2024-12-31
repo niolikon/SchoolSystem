@@ -1,28 +1,26 @@
 ﻿using FluentAssertions;
 using AutoMapper;
+using SchoolSystem.Core.Course;
 using SchoolSystem.Core.Student;
 using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common.BaseClasses;
 using SchoolSystem.Core.Common;
-using SchoolSystem.Core.Teacher;
-using SchoolSystem.Tests.Core.Teacher;
-using SchoolSystem.Core.Course;
 using SchoolSystem.Tests.Core.Course;
-using System.Collections.Generic;
 
 namespace SchoolSystem.Tests.Core.Student;
 
-
 public class StudentMapperTest
 {
-    private readonly IBaseMapper<StudentModel, StudentDto> _studentDtoMapper;
-    private readonly IBaseMapper<StudentDto, StudentModel> _studentModelMapper;
+    private readonly IBaseMapper<StudentModel, StudentDetailsDto> _studentDtoMapper;
+    private readonly IBaseMapper<StudentCreateDto, StudentModel> _studentCreateToModelMapper;
+    private readonly IBaseMapper<StudentUpdateDto, StudentModel> _studentUpdateToModelMapper;
 
     public StudentMapperTest()
     {
         IMapper _mapper = MapperConfigurationFactory.CreateMapper();
-        _studentDtoMapper = new BaseMapper<StudentModel, StudentDto>(_mapper);
-        _studentModelMapper = new BaseMapper<StudentDto, StudentModel>(_mapper);
+        _studentDtoMapper = new BaseMapper<StudentModel, StudentDetailsDto>(_mapper);
+        _studentCreateToModelMapper = new BaseMapper<StudentCreateDto, StudentModel>(_mapper);
+        _studentUpdateToModelMapper = new BaseMapper<StudentUpdateDto, StudentModel>(_mapper);
     }
 
     [Theory]
@@ -42,10 +40,20 @@ public class StudentMapperTest
     }
 
     [Theory]
-    [MemberData(nameof(StudentTestData.StudentDtoTestCases), MemberType = typeof(StudentTestData))]
-    public void Should_Map_Dto_To_Model(StudentDto dto)
+    [MemberData(nameof(StudentTestData.StudentCreateDtoTestCases), MemberType = typeof(StudentTestData))]
+    public void Should_Map_Create_Dto_To_Model(StudentCreateDto dto)
     {
-        var model = _studentModelMapper.MapInstance(dto);
+        var model = _studentCreateToModelMapper.MapInstance(dto);
+
+        model.FullName.Should().Be(dto.FullName);
+        model.Email.Should().Be(dto.Email);
+    }
+
+    [Theory]
+    [MemberData(nameof(StudentTestData.StudentUpdateDtoTestCases), MemberType = typeof(StudentTestData))]
+    public void Should_Map_Update_Dto_To_Model(StudentUpdateDto dto)
+    {
+        var model = _studentUpdateToModelMapper.MapInstance(dto);
 
         model.Id.Should().Be(dto.Id);
         model.FullName.Should().Be(dto.FullName);

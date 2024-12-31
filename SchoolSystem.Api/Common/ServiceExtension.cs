@@ -25,14 +25,20 @@ public static class ServiceExtension
         #region Mapper
         IMapper mapper = MapperConfigurationFactory.CreateMapper();
         services.AddSingleton<IMapper>(mapper);
-        services.AddSingleton<IBaseMapper<CourseModel, CourseDto>>(new BaseMapper<CourseModel, CourseDto>(mapper));
-        services.AddSingleton<IBaseMapper<CourseDto, CourseModel>>(new BaseMapper<CourseDto, CourseModel>(mapper));
+        services.AddSingleton<IBaseMapper<CourseModel, CourseDetailsDto>>(new BaseMapper<CourseModel, CourseDetailsDto>(mapper));
+        services.AddSingleton<IBaseMapper<CourseDetailsDto, CourseModel>>(new BaseMapper<CourseDetailsDto, CourseModel>(mapper));
+        services.AddSingleton<IBaseMapper<CourseCreateDto, CourseModel>>(new BaseMapper<CourseCreateDto, CourseModel>(mapper));
+        services.AddSingleton<IBaseMapper<CourseUpdateDto, CourseModel>>(new BaseMapper<CourseUpdateDto, CourseModel>(mapper));
 
-        services.AddSingleton<IBaseMapper<StudentModel, StudentDto>>(new BaseMapper<StudentModel, StudentDto>(mapper));
-        services.AddSingleton<IBaseMapper<StudentDto, StudentModel>>(new BaseMapper<StudentDto, StudentModel>(mapper));
+        services.AddSingleton<IBaseMapper<StudentModel, StudentDetailsDto>>(new BaseMapper<StudentModel, StudentDetailsDto>(mapper));
+        services.AddSingleton<IBaseMapper<StudentDetailsDto, StudentModel>>(new BaseMapper<StudentDetailsDto, StudentModel>(mapper));
+        services.AddSingleton<IBaseMapper<StudentCreateDto, StudentModel>>(new BaseMapper<StudentCreateDto, StudentModel>(mapper));
+        services.AddSingleton<IBaseMapper<StudentUpdateDto, StudentModel>>(new BaseMapper<StudentUpdateDto, StudentModel>(mapper));
 
-        services.AddSingleton<IBaseMapper<TeacherModel, TeacherDto>>(new BaseMapper<TeacherModel, TeacherDto>(mapper));
-        services.AddSingleton<IBaseMapper<TeacherDto, TeacherModel>>(new BaseMapper<TeacherDto, TeacherModel>(mapper));
+        services.AddSingleton<IBaseMapper<TeacherModel, TeacherDetailsDto>>(new BaseMapper<TeacherModel, TeacherDetailsDto>(mapper));
+        services.AddSingleton<IBaseMapper<TeacherDetailsDto, TeacherModel>>(new BaseMapper<TeacherDetailsDto, TeacherModel>(mapper));
+        services.AddSingleton<IBaseMapper<TeacherCreateDto, TeacherModel>>(new BaseMapper<TeacherCreateDto, TeacherModel>(mapper));
+        services.AddSingleton<IBaseMapper<TeacherUpdateDto, TeacherModel>>(new BaseMapper<TeacherUpdateDto, TeacherModel>(mapper));
         #endregion
 
         #region Services

@@ -1,23 +1,19 @@
 ﻿using SchoolSystem.Core.Common.BaseInterfaces;
 using SchoolSystem.Core.Common;
 using SchoolSystem.Core.Student;
-using SchoolSystem.Core.Teacher;
 using SchoolSystem.Core.Exceptions.Api;
 using SchoolSystem.Core.Exceptions.Domain;
 
 namespace SchoolSystem.Core.Course;
 
-
 public class CourseService(
-    IBaseMapper<CourseModel, CourseDto> courseDtoMapper,
-    IBaseMapper<CourseDto, CourseModel> courseModelMapper,
+    IBaseMapper<CourseModel, CourseDetailsDto> courseDtoMapper,
+    IBaseMapper<CourseCreateDto, CourseModel> courseCreateToModelMapper,
+    IBaseMapper<CourseUpdateDto, CourseModel> courseUpdateToModelMapper,
     ICourseRepository courseRepository,
-    IBaseMapper<StudentModel, StudentDto> studentDtoMapper,
-    IStudentRepository studentRepository,
-    IBaseMapper<TeacherModel, TeacherDto> teacherDtoMapper,
-    ITeacherRepository teacherRepository) : ICourseService
+    IStudentRepository studentRepository) : ICourseService
 {
-    public async Task<IEnumerable<CourseDto>> GetAll()
+    public async Task<IEnumerable<CourseDetailsDto>> GetAll()
     {
         try
         {
@@ -33,14 +29,14 @@ public class CourseService(
         }
     }
 
-    public async Task<PaginatedData<CourseDto>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<PaginatedData<CourseDetailsDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
         try
         {
             PaginatedData<CourseModel> paginatedCourses = await courseRepository.GetPaginatedData(pageNumber, pageSize);
-            List<CourseDto> courses = courseDtoMapper.MapList(paginatedCourses.Data).ToList();
+            List<CourseDetailsDto> courses = courseDtoMapper.MapList(paginatedCourses.Data).ToList();
 
-            return new PaginatedData<CourseDto>(courses, paginatedCourses.TotalCount);
+            return new PaginatedData<CourseDetailsDto>(courses, paginatedCourses.TotalCount);
         }
         catch (InvalidQueryDomainException)
         {
@@ -56,13 +52,13 @@ public class CourseService(
         }
     }
 
-    public async Task<CourseDto> GetSingle(int id)
+    public async Task<CourseDetailsDto> GetSingle(int id)
     {
         try
         {
             return courseDtoMapper.MapInstance(await courseRepository.GetByIdWithDetails(id));
         }
-        catch(EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Course with id {id}");
         }
@@ -76,11 +72,11 @@ public class CourseService(
         }
     }
 
-    public async Task<CourseDto> Create(CourseDto dto)
+    public async Task<CourseDetailsDto> Create(CourseCreateDto dto)
     {
         try
         {
-            CourseModel model = courseModelMapper.MapInstance(dto);
+            CourseModel model = courseCreateToModelMapper.MapInstance(dto);
             model.EntryDate = DateTime.Now;
 
             return courseDtoMapper.MapInstance(await courseRepository.Create(model));
@@ -99,12 +95,12 @@ public class CourseService(
         }
     }
 
-    public async Task Update(int id, CourseDto updateInputDto)
+    public async Task Update(int id, CourseUpdateDto updateInputDto)
     {
         try
         {
             CourseModel existingCourse = await courseRepository.GetById(id);
-            CourseModel updateInputCourse = courseModelMapper.MapInstance(updateInputDto);
+            CourseModel updateInputCourse = courseUpdateToModelMapper.MapInstance(updateInputDto);
 
             existingCourse.Name = updateInputCourse.Name;
             existingCourse.Credits = updateInputCourse.Credits;
@@ -112,7 +108,7 @@ public class CourseService(
 
             await courseRepository.Update(existingCourse);
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Course with id {id}");
         }
@@ -133,7 +129,7 @@ public class CourseService(
             CourseModel course = await courseRepository.GetById(id);
             await courseRepository.Delete(course);
         }
-        catch (EntityNotFoundDomainException e)
+        catch (EntityNotFoundDomainException)
         {
             throw new NotFoundRestException($"Could not find Course with id {id}");
         }
@@ -151,7 +147,7 @@ public class CourseService(
         }
     }
 
-    public async Task<CourseDto> AddStudentEnrollmentToCourse(int courseId, StudentDto student)
+    public async Task<CourseDetailsDto> AddStudentEnrollmentToCourse(int courseId, StudentUpdateDto student)
     {
         try
         {
@@ -175,7 +171,7 @@ public class CourseService(
         }
     }
 
-    public async Task<CourseDto> DeleteStudentEnrollmentToCourse(int courseId, int studentId)
+    public async Task<CourseDetailsDto> DeleteStudentEnrollmentToCourse(int courseId, int studentId)
     {
         try
         {
@@ -199,11 +195,11 @@ public class CourseService(
         }
     }
 
-    public async Task<IEnumerable<StudentDto>> ListStudentsEnrolledToCourse(int courseId)
+    public async Task<IEnumerable<StudentDetailsDto>> ListStudentsEnrolledToCourse(int courseId)
     {
         try
         {
-            CourseDto courseDto = courseDtoMapper.MapInstance(await courseRepository.GetByIdWithDetails(courseId));
+            CourseDetailsDto courseDto = courseDtoMapper.MapInstance(await courseRepository.GetByIdWithDetails(courseId));
             return courseDto.Students;
         }
         catch (EntityNotFoundDomainException)

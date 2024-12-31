@@ -3,10 +3,9 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-
 namespace SchoolSystem.Core.Teacher;
 
-public class TeacherDto
+public class TeacherDetailsDto
 {
     public int Id { get; set; }
 
@@ -21,5 +20,5 @@ public class TeacherDto
 
     [SwaggerSchema(ReadOnly = true)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<CourseDto>? Courses { get; set; }
+    public List<CourseDetailsDto>? Courses { get; set; }
 }
